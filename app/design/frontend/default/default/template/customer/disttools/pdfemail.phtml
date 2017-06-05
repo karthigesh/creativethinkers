@@ -1,0 +1,64 @@
+<?php
+$userid = Mage::registry('user_id');
+$user_email = Mage::registry('user_email');
+$baseurl =Mage::getBaseUrl();
+?>
+<div class="page-title">
+        <h1><?php echo $this->__('Send Email');?></h1>
+</div>
+<div id="success"></div>
+<div class="email_send">
+	<h3><?php echo $this->__('You can send to multiple email addressess seperated by commas');?></h3>
+	<form id="flyemailform">
+		<div class="eset">
+			<label for="adminemail"><?php echo $this->__('Admin Email');?></label>
+			<input type="email" name="adminemail" id="adminemail" value="<?php echo $user_email;?>"/>
+		</div>
+		<div class="eset">
+			<label for="toemail"><?php echo $this->__('Recipient Email');?></label>
+			<input type="email" name="toemail" id="toemail"/>
+		</div>
+		<div class="eset">
+			<label for="esub"><?php echo $this->__('Subject');?></label>
+			<input type="text" name="esub" id="esub"/>
+		</div>
+		<div class="eset">
+			<button type="submit" name="emailsend" id="emailsend"><?php echo $this->__('Send Email');?></button>
+		</div>
+	</form>
+</div>
+<script>
+	jQuery('#emailsend').click(function(){
+		//alert('hi');
+		var baseurl = '<?php echo $baseurl;?>';
+		var adminemail = jQuery('#adminemail').val();
+		var toemail = jQuery('#toemail').val();
+		var esub = jQuery('#esub').val();
+		if(adminemail==""){
+			alert('Please enter the admin email');
+		}else if(toemail==""){
+			alert('Please enter the recipient email');
+		}else if(esub==""){
+			alert('Please enter the subject');
+		}else{
+			var formData = new FormData(jQuery('#flyemailform')[0]);
+			jQuery.ajax({
+							url: baseurl+'customer/disttools/pdfmailsubmits/',
+							type: 'POST',
+							data: formData,
+							async: false,            
+							success: function (data) {
+								//alert(data);	
+								jQuery('#success').html(data);		
+									setTimeout(function() {
+									  jQuery('.sucesdiv').remove();
+									}, 5000);				
+							},
+							cache: false,
+							contentType: false,
+							processData: false
+			});
+		}
+		return false;
+	});
+</script>

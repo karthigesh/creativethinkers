@@ -1,0 +1,69 @@
+<div class="netprice-dashboard">
+	<div class="page-title">
+        <h1><?php echo $this->__('Coded Price List');?></h1>
+    </div>
+    <div class="netcodeprice">
+    <div class="nethead">
+	<div class="necol1">
+		<h3><?php echo $this->__('Free Setup & Free Label (288+)');?></h3>
+    </div>
+    <div class="necol2">
+		<h3><?php echo $this->__('Free Digitizing (144+)');?></h3>
+	</div>
+    </div>
+    <button id="down" class="button"><?php echo $this->__('Download');?></button>
+    <?php
+    $customer_group_id = '1';
+	$read = Mage::getSingleton('core/resource')->getConnection('core_read');
+	$prodsql = "SELECT `entity_id` FROM `catalog_product_flat_1` WHERE `status`='1'";
+	$rows = $read->fetchAll($prodsql);
+	echo '<div id="printtable">';
+	echo '<table class="netcodedtable" style="width: 100%;">';
+	echo '<thead><tr>
+	<th style="padding: 20px;"><h3>Item Number</h3></th>
+	<th style="padding: 20px;"><h3>144</h3></th>
+	<th style="padding: 20px;"><h3>288</h3></th>
+	<th style="padding: 20px;"><h3>576</h3></th>
+	<th style="padding: 20px;"><h3>1152</h3></th>
+	<th style="padding: 20px;"><h3>1500</h3></th>
+	<th style="padding: 20px;"><h3></h3></th>
+	</tr></thead><tbody>';
+	foreach($rows as $newrow){
+		$id = $newrow['entity_id'];
+		$prod = "SELECT `sku` FROM  `catalog_product_entity` WHERE `entity_id` = '$id'";
+		$prodsku = $read->fetchAll($prod);
+		$sql  = "SELECT *  FROM `catalog_product_entity_tier_price` WHERE `customer_group_id` ='$customer_group_id' AND `entity_id` = '$id'";
+		$rows = $read->fetchAll($sql);
+		$_product = Mage::getModel('catalog/product')->load($id);
+		$strProdSkuSup = $_product->getData('netpricecode');
+		if(count($rows)>1){
+		//print_r($prodsku);
+		$itemnumber = $prodsku[0]['sku'];
+		echo '<tr>';
+		echo '<td style="padding: 5px 0px 5px 20px;">'.$itemnumber.'</td>';
+		foreach($rows as $rownew){
+			echo '<td style="padding: 5px 0px 5px 20px;">'.number_format($rownew['value'],2).'</td>';
+		}
+		echo '<td style="padding: 5px 0px 5px 20px;">'.$strProdSkuSup.'</td>';
+		echo '</tr>';
+		}
+	}
+	echo '</tbody></table>';
+	echo '</div>';
+    ?>
+    </div>
+</div>
+<script>
+	jQuery('#down').click(function(){
+	var mywindow = window.open();
+	mywindow.document.write('<html><head><title>Coded Price List</title>');
+	mywindow.document.write('<style type="text/css" media="print,screen">tbody tr:nth-child(odd) {background: rgba(18, 81, 178, 0.25);}</style>');
+	mywindow.document.write('</head><body>');
+	mywindow.document.write('<h2>Coded Price List</h2>')
+	mywindow.document.write(jQuery('#printtable').html());
+	mywindow.document.write('</body></html>');
+	mywindow.document.close();
+	setTimeout(function () { mywindow.print();  }, 1000);
+	setTimeout(function () { mywindow.close(); }, 1020); 
+});
+</script>

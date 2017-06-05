@@ -1,0 +1,136 @@
+<?php
+$var_value = Mage::registry('vendordetails');
+$pager = Mage::registry('pager');
+$vendorcategory = Mage::registry('vendorcategory');
+$vendor_url = $var_value['vendor_url'];
+$vendorname = $var_value['vendorname'];
+$vendortitle = str_replace('-', ' ', $vendorname);
+$category = Mage::getModel('catalog/category')->setStoreId(Mage::app()->getStore()->getId())->load($vendorcategory);
+$baseurl = Mage::getBaseUrl();
+$catimage = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).'catalog/category/'.$category['image'];
+$collection = $category->getProductCollection();
+$collection->addAttributeToSelect('*');
+if($_GET['limit']){
+	//echo 'hi';
+	$limit = $_GET['limit'];
+	$page = $_GET['p'];
+	if($_GET['limit'] == 'all'){
+		//$collection->setPageSize('-1')->setCurPage($page);
+	}else{
+		$collection->setPageSize($_GET['limit'])->setCurPage($page);
+	}
+}else{
+	$collection->setPageSize(12)->setCurPage(1);
+}
+?>
+<div id="yt_content" class="yt-content wrap">
+	<div id="yt_main" class="yt-main col-main">
+		<div class="yt-main-inner yt-content-inner">
+			<div class="container">
+				<div class="row"> 
+					<div id="yt_pathway" class="clearfix">
+						<div class="pathway-inner">
+							<ul class="breadcrumbs">
+								<div class="breadcrumbs-content">
+									<li class="home" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+									<a itemprop="url" href="<?php echo $baseurl.'shop'.DS.$vendorname.DS;?>" title="Go to Home Page" class="has-link"><span itemprop="title">Home</span></a>
+									</li>
+									<li class="category<?php echo $vendorcategory;?> last" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+									<?php echo $category['name']; ?>
+									</li>
+								</div>
+							</ul><!-- breadcrumbs-->
+						</div><!--pathwayinner-->
+					</div><!-- yt pathway-->
+					<div class="columns-w">
+						<?php if($category['image']){?>
+						<p class="category-image"><img src="<?php echo $catimage;?>" alt="<?php echo $category['name']; ?>" title="<?php echo $category['name']; ?>"></p>
+						<?php }?>
+						<div id="catalog-listing">
+							<div class="category-products">
+								
+								<div id="success"></div>
+										<?php 
+										$toolbar = Mage::getBlockSingleton('catalog/product_list')->getToolbarBlock();
+										$toolbar->setCollection($collection);
+										$toolbar->setChild('product_list_toolbar_pager', $pager);
+										echo $toolbar->toHtml();
+										?>
+								<div class="compare_button">
+									<button type="button" title="Compare" class="button" onclick="popWin('<?php echo $baseurl;?>catalog/product_compare/index/','compare','top:0,left:0,width=820,height=600,resizable=yes,scrollbars=yes')" style="float: right;"><span><span>Compare</span></span></button>
+								</div><!-- compare button-->
+								<div class="clear"></div>
+								<div class="yt-products-container clearfix">
+									<div class="products-grid">
+									<div class="row">
+										<?php foreach ($collection as $_product) {
+											$selectprod = $_product->getId();
+											$producturl = $baseurl.'shop/'.$vendorname.'/prodid/'.$selectprod.'/'; ?>
+										<div class="item col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<div class="item-inner">
+												<div class="product-image">
+													<a href="<?php echo $producturl;?>" title="Classic SportsMesh" class="product-image">
+														<img id="product-collection-image-<?php echo $selectprod;?>" src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(200); ?>" alt="Classic SportsMesh">
+													</a>
+												</div><!--- product image-->
+												<div class="product-info">
+													<div class="product-name">
+														<a href="<?php echo $producturl;?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>">
+														<?php echo $this->stripTags($_product->getName(), null, true) ?></a>
+													</div><!-- product name-->
+												<div class="prod_sku">
+													<span><?php echo $this->__('Style:');?></span><?php echo $_product->getSku() ?>
+												</div><!-- prod sku-->
+												<div class="product-addto-wrap">
+													<div class="wishlist-compare">
+														<label style="float: left; padding: 18px;color: white;font-size: 16px;line-height: 16px;">
+															<input type="checkbox" name="add-compare" data-id="<?php echo $_product->getId(); ?>" id="add-compare-<?php echo $selectprod;?>" value="<?php echo $baseurl;?>catalog/product_compare/add/product/<?php echo $selectprod;?>/uenc/aHR0cDovL2NhcHMub25saW5lL21vc3QtcG9wdWxhci5odG1s/form_key/UPugQbxCpYbODozG/">
+															<?php echo $this->__('Compare');?>
+														</label>							
+													</div><!-- wishlist compare-->
+													<a href="<?php echo $producturl;?>" class="link-view" title="Classic SportsMesh" style="padding: 14px;"><?php echo $this->__('> View Details');?></a>
+												</div><!--prod-addto-wrap-->
+												</div><!-- product info-->
+											</div><!--item inner-->
+										</div><!--item-->
+										<script>
+										jQuery('#add-compare-<?php echo $_product->getId(); ?>').click(function(){
+										var prodids = jQuery(this).attr("data-id");
+										var baseurl = '<?php echo $baseurl;?>';
+										jQuery(this).prop("checked", "checked");
+										jQuery(this).attr("checked", true);
+										jQuery.ajax({
+										url: baseurl+'shop/product/compareadd/',
+										type: 'POST',
+										data:{prodids},
+										success: function(data) {
+											if(data='committed'){
+													html = '<div class="msgsuccess">Success. Product added to Compare List.</div>';
+													jQuery('#success').append(html);
+													setTimeout(function() {
+														jQuery('.msgsuccess').remove();
+													}, 3000);
+												}
+											},
+										});
+										return false;
+										}); 
+										</script>
+										<?php } ?>
+									</div><!--row-->
+									<?php 
+										$toolbar = Mage::getBlockSingleton('catalog/product_list')->getToolbarBlock();
+										$toolbar->setCollection($collection);
+										$toolbar->setChild('product_list_toolbar_pager', $pager);
+										echo $toolbar->toHtml();
+									?>
+									</div><!-- products grid-->									
+								</div><!--yt-products-container-->
+							</div><!--category-products-->
+						</div><!--catalog-listing-->
+					</div><!--columns-w-->					
+				</div><!--row-->
+			</div><!--container-->
+		</div><!--yt main inner-->
+	</div><!-- yt main-->
+</div><!--yt content-->

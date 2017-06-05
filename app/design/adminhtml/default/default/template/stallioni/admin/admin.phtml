@@ -1,0 +1,168 @@
+<?php 
+$resource = Mage::getSingleton('core/resource')->getConnection('core_read');
+$query = 'SELECT * FROM vendorpage';
+$selectquery = $resource->fetchAll($query);
+$baseurl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+$currentUrl = Mage::helper('core/url')->getCurrentUrl();
+$current_url = explode('?', $currentUrl);
+$previous_url = $current_url[0];
+if($_GET){
+ $cust_id = $_GET['customer_id'];
+ $resource = Mage::getSingleton('core/resource')->getConnection('core_read');
+ $query = 'SELECT * FROM vendorpage WHERE vendor_id = '. (int)$cust_id;
+ $selectquery1 = $resource->fetchRow($query);
+
+?>
+<div class="content-header">
+<table cellspacing="0">
+    <tbody>
+		<tr>
+        <td style="width:90%;"><h3 class="icon-head head-products"><?php echo $this->__('Edit Distributor');?></h3></td>
+        <td style="text-align:right;"><a href="<?php echo $previous_url;?>"><?php echo $this->__('Back');?></a></td>
+		</tr>
+	</tbody>	
+</table>
+</div>
+<div id="success"></div>
+<div class="entry-edit">
+	<div class="entry-edit-head"><h4 class="icon-head head-edit-form fieldset-legend"><?php echo $this->__('General');?></h4></div>
+	<div class="fieldset fieldset-wide">
+		<div class="hor-scroll">
+			<form method="POST" name="vendorselect" id="vendorselect">
+				<table cellspacing="0" class="vendorselecttable">
+					<tbody>
+						<tr>
+							<td class="label"><label for="vendorname"><?php echo $this->__('Vendor Name');?><span class="required">*</span></label></td>
+							<td class="value"><input type="text" name="vendorname" id="vendorname" value="<?php echo $selectquery1['vendorname'];?>"/></td>
+						</tr>
+						<tr>
+							<td class="label"><label for="name"><?php echo $this->__('Vendor Phone');?><span class="required">*</span></label></td>
+							<td class="value"><input type="tel" name="vendortel" id="vendortel" value="<?php echo $selectquery1['vendorphone'];?>"></td>
+						</tr>
+						<tr>
+							<td class="label"><label for="name"><?php echo $this->__('Vendor Email');?><span class="required">*</span></label></td>
+							<td class="value"><input type="email" name="vendoremail" id="vendoremail" value="<?php echo $selectquery1['vendoremail'];?>"></td>
+						</tr>
+						<tr>
+							<td class="label"><label for="name"><?php echo $this->__('Vendor Address');?><span class="required">*</span></label></td>
+							<td class="value"><textarea name="vendaddress" id="vendaddress" rows="5" cols="30"><?php echo $selectquery1['address'];?></textarea></td>
+						</tr>
+						<tr>
+							<td class="label"></td>
+							<td class="value">
+							<input type="hidden" name="cust_id" id="cust_id" value="<?php echo $cust_id;?>"/>
+							<button type="submit" id="vendorselectsubmit" name="vendorselectsubmit"><?php echo $this->__('Submit');?></button>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+		</div>
+	</div>
+</div>
+<?php
+}else{
+?>
+<div class="content-header">
+<table cellspacing="0">
+    <tbody><tr>
+        <td style="width:100%;"><h3 class="icon-head head-products"><?php echo $this->__('Distributor Websites');?></h3></td>
+    </tr>
+</tbody></table>
+</div>
+<div class="grid">
+	<div class="hor-scroll">
+		<table cellspacing="0">
+			<thead>
+				<tr class="headings">
+					<th style="width: 10%;"><span class="nobr"><?php echo $this->__('ID');?></span></th>
+					<th style="width: 10%;"><span class="nobr"><?php echo $this->__('Distributor ID');?></span></th>
+					<th style="width: 10%;"><span class="nobr"><?php echo $this->__('Name');?></span></th>
+					<th style="width: 15%;"><span class="nobr"><?php echo $this->__('Logo');?></span></th>
+					<th style="width: 15%;"><span class="nobr"><?php echo $this->__('Phone');?></span></th>
+					<th style="width: 15%;"><span class="nobr"><?php echo $this->__('Address');?></span></th>
+					<th style="width: 15%;"><span class="nobr"><?php echo $this->__('Url');?></span></th>
+					<th style="width: 10%;"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php 
+				$i=0;
+				foreach($selectquery as $dist){
+				?>
+				<tr class="<?php if($i%2==0){echo 'even';}?> pointer">
+					<td><?php echo $dist['vendorpage_id'];?></td>
+					<td><?php echo $dist['vendor_id'];?></td>
+					<td><?php echo $dist['vendorname'];?></td>
+					<td style="text-align: center;"><img src="<?php echo $dist['vendorlogo'];?>" style="width: 100px;"/></td>
+					<td><?php echo $dist['vendorphone'];?></td>
+					<td><?php echo $dist['address'];?></td>
+					<td><?php echo Mage::getBaseUrl().'shop/'.$dist['vendorname'].'/';?></td>
+					<td>
+					<form id="distset">
+						<input type="hidden" name="customer_id" value="<?php echo $dist['vendor_id'];?>"/>
+						<button id="custedit"><?php echo $this->__('Edit');?></button>
+					</form>
+					</td>
+				</tr>					
+				<?php 
+				$i++;
+				}
+				?>
+			</tbody>
+		</table>
+	</div>
+</div>
+<?php
+}
+?>
+<script>
+	jQuery('#vendorselectsubmit').click(function(){		
+		var vendname = jQuery('#vendorname').val();
+		var vendlogo = jQuery('#vendorlogo').val();
+		var vendphone = jQuery('#vendortel').val();
+		var vendaddr = jQuery('#vendaddress').val();
+		var vendoremail = jQuery('#vendoremail').val();
+		var cust_id = jQuery('#cust_id').val();
+		var baseurl = '<?php echo $baseurl;?>';
+		var formData = new FormData(jQuery('#vendorselect')[0]);
+		intRegex = /[0-9 -()+]+$/;
+		var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+		if(vendname ==""){
+			alert('please give the vendor name!');
+			return false;
+		}else if(vendlogo ==""){
+			alert('please upload the logo!');
+			return false;
+		}else if((vendphone.length < 10) || (vendphone.length > 12) || (!intRegex.test(vendphone))){
+			 alert('Please enter a valid phone number.');
+			 return false;
+		}else if(vendaddr ==""){
+			alert('please add your address');
+			return false;
+		}else if((vendoremail == "")||(!emailReg.test(vendoremail))){
+			alert('please enter valid email address.');
+			return false;
+		}
+		else{
+			jQuery.ajax({
+							url: baseurl+'vendorpage/index/vendoroldsaves/',
+							type: 'POST',
+							data: formData,
+							async: false,            
+							success: function (data) {
+								if(data='committed'){
+									html = '<div class="msgsuccess">Success. Vendor details have been successfully saved</div>';
+									jQuery('#success').append(html);
+									setTimeout(function() {
+									jQuery('.msgsuccess').remove();
+									}, 3500);
+								}
+							},
+							cache: false,
+							contentType: false,
+							processData: false
+		});
+		}
+		return false;
+	});
+</script>

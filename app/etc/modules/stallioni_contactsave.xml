@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <stallioni_contactsave>
+			<active>true</active>
+			<codePool>local</codePool>
+			<version>1.0.0</version>
+        </stallioni_contactsave>        
+    </modules>
+	<global>
+		<block>
+			<stallioni_contactsave>
+				<class>Stallioni_Contactsave_Block</class>
+			</stallioni_contactsave>
+		</block>
+		<models>
+            <stallioni_contactsave>
+                <class>Stallioni_Contactsave_Model</class>
+                <resourceModel>Contactsave_resource</resourceModel>
+            </stallioni_contactsave>
+            <contactsave_mysql4>
+                <class>Stallioni_Contactsave_Model_Mysql4</class>
+            </contactsave_mysql4>
+             <contactsave_resource>
+				<class>Stallioni_Contactsave_Model_Resource</class>
+			</contactsave_resource>
+          </models>
+		<helpers>
+			<contactsave>
+				<class>Stallioni_Contactsave_Helper</class>
+			</contactsave>
+		</helpers>
+	</global>
+</config>
+

@@ -1,0 +1,45 @@
+<?php 
+$resource = Mage::getSingleton('core/resource')->getConnection('core_read');
+$query = 'SELECT * FROM vendorpage_about';
+$selectquery = $resource->fetchAll($query);
+?>
+<div class="content-header">
+<table cellspacing="0">
+    <tbody><tr>
+        <td style="width:100%;"><h3 class="icon-head head-products"><?php echo $this->__('Distributor Websites About Description');?></h3></td>
+    </tr>
+</tbody></table>
+</div>
+<div class="grid">
+	<div class="hor-scroll">
+		<table cellspacing="0">
+			<thead>
+				<tr class="headings">
+					<th><span class="nobr"><?php echo $this->__('ID');?></span></th>
+					<th><span class="nobr"><?php echo $this->__('Distributor ID');?></span></th>
+					<th><span class="nobr"><?php echo $this->__('Distributor Name');?></span></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php 
+				$i=0;
+				foreach($selectquery as $dist){
+					$cust_id = $dist['vendorid'];
+					$query = 'SELECT vendorname FROM vendorpage WHERE vendor_id = '. (int)$cust_id;
+					$selectquery1 = $resource->fetchRow($query);
+				?>
+				<tr class="<?php if($i%2==0){echo 'even';}?> pointer">
+				<td><?php echo $dist['id'];?></td>
+				<td><?php echo $dist['vendorid'];?></td>
+				<td><?php echo $selectquery1['vendorname'];?></td>
+				<td></td>
+				</tr>
+				<?php
+				$i++;
+				}
+				?>
+			</tbody>
+		</table>
+	</div>
+</div>

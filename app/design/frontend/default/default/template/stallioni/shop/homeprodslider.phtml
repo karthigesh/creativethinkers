@@ -1,0 +1,124 @@
+<?php
+$vendorid = Mage::registry('vendorid');
+$vendorurl = Mage::registry('vendorurl');
+$conn = Mage::getSingleton('core/resource')->getConnection('core_read');
+$query = 'SELECT * FROM prodselect WHERE vendorid = '. (int)$vendorid;
+$selectquery = $conn->fetchRow($query);
+$product_ids = unserialize($selectquery['selectproducts']);
+?>
+<div class="home-products">
+										<div class="page-title">
+											<h1><?php echo $this->__('Best sellers');?></h1>
+										</div>
+										<div class="yt-products-container clearfix">
+											<div class="products-grid homeprodslider">
+												<div class="row">
+													<div class="slide-gallery2">
+														<div class="jCarouselLite2">
+															<ul>
+													<?php				
+														$i=1;
+														foreach($product_ids as $selectprod){
+															$_product = Mage::getModel('catalog/product')->load($selectprod);
+															$producturl = $vendorurl.'prodid/'.$selectprod.'/';
+															$customer_group = $_product->getAttributeText('custom_groups');
+															if($customer_group !="distributor"){?>
+																<li>
+																	<div class="item col-xs-12">
+																<div class="item-inner">
+																	<div class="product-image">
+																		<a href="<?php echo $producturl?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image">
+																		<img id="product-collection-image-<?php echo $_product->getId(); ?>"
+																		src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(250,250); ?>"
+																		alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" />
+																		</a>
+																	</div><!--- product image-->
+																	<div class="product-info">
+																		<div class="product-name">
+																			<a href="<?php echo $producturl ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>">
+																			<?php echo $this->stripTags($_product->getName(), null, true) ?>
+																			</a>
+																		</div>
+																		<div class="prod_sku">
+																			<?php echo '<span>'.$this->__('Style:').'</span>'. Mage::getModel('catalog/product')->load($selectprod)->getSku();?>
+																		</div><!-- prod sku-->
+																		<div class="product-addto-wrap">
+																			<div class="wishlist-compare">
+																				<?php  $_compareUrl=Mage::helper('catalog/product_compare')->getAddUrl($_product); ?>
+																				<label style="float: left; padding: 18px;color: white;font-size: 16px;line-height: 16px;">
+																				<input type="checkbox" name="add-compare" id="add-compare-<?php echo $_product->getId(); ?>" value="<?php echo $_compareUrl ?>"/>
+																				<?php echo $this->__('Compare'); ?>
+																				</label>							
+																			</div>
+																			<a href="<?php echo $producturl; ?>" class="link-view" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>">
+																				<?php echo '> View Details';?> 
+																			</a>
+																		</div><!--prod-addto-wrap-->
+																	</div><!-- product info-->
+																</div><!--item inner-->
+															</div><!--item-->
+															<script>
+															jQuery('#add-compare-<?php echo $_product->getId(); ?>').click(function(e){
+																e.preventDefault
+																urlcompare = jQuery(this).val();
+																urlcompare = urlcompare.replace("catalog/product_compare/add","quickview/index/compare");
+																window.location =  urlcompare;
+																return false;
+															});
+															</script>
+															<?php
+															$i++;?>
+															</li>
+														<?php	
+														}
+													}
+													?>
+														</ul>
+													</div>
+													<span class="next"></span>
+													<span class="prev"></span> 
+												   </div>
+												</div><!-- row-->
+											</div><!-- products grid-->
+										</div><!--yt products container-->
+									</div><!--category products-->
+<script type="text/javascript">
+
+		jQuery(document).ready(function(){
+		jQuery.noConflict();
+		function init_slide2(){			
+			device = jQuery.fn.detectDevice(); 
+			number_visible = 4;
+			if(  device =="tablet" || device =="normal" || device =="stablet" ){
+				number_visible = 2 ;
+			}
+			if( device =="mobile"){
+				number_visible = 1 ;
+			}
+			jQuery(".jCarouselLite2").jCarouselLite({
+				btnNext: ".slide-gallery2 .next",
+				btnPrev: ".slide-gallery2 .prev",
+				visible: number_visible,
+				start: 0,
+				circular: true,
+				auto: 1500,
+				speed: 1000
+			}); 				
+		} 
+		init_slide2(); 
+		
+		jQuery('.jCarouselLite2 ul li a').each(function(){
+			if(jQuery(this).hasClass('actived')){
+				jQuery(this).parent().addClass('selected');	
+			}				
+		});
+					
+		jQuery('.jCarouselLite2 ul li a').click(function(){
+			$this = jQuery(this);
+			jQuery('.jCarouselLite2 ul li a').parent().removeClass('selected');
+			if($this.hasClass('actived')){				
+				$this.parent().addClass('selected');
+			}
+		});	
+		});
+</script>

@@ -1,0 +1,55 @@
+<?php 
+$resource = Mage::getSingleton('core/resource')->getConnection('core_read');
+$query = 'SELECT * FROM vendor_freeorder';
+$selectquery = $resource->fetchAll($query);
+?>
+<div class="content-header">
+<table cellspacing="0">
+    <tbody><tr>
+        <td style="width:100%;"><h3 class="icon-head head-products"><?php echo $this->__('Distributor Complimentary Sample Orders:');?></h3></td>
+    </tr>
+</tbody></table>
+</div>
+<div class="grid">
+	<div class="hor-scroll">
+		<table cellspacing="0">
+			<thead>
+				<tr class="headings">
+					<th><span class="nobr"><?php echo $this->__('ID');?></span></th>
+					<th><span class="nobr"><?php echo $this->__('Distributor ID');?></span></th>
+					<th><span class="nobr"><?php echo $this->__('Distributor Name');?></span></th>
+					<th><span class="nobr"><?php echo $this->__('Company Name');?></span></th>
+					<th><span class="nobr"><?php echo $this->__('Email');?></span></th>
+					<th><span class="nobr"><?php echo $this->__('Phone');?></span></th>
+					<th><span class="nobr"><?php echo $this->__('Address');?></span></th>
+					<th><span class="nobr"><?php echo $this->__('Shipping Company');?></span></th>
+					<th><span class="nobr"><?php echo $this->__('Shipping Account Number');?></span></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php 
+				$i=0;
+				foreach($selectquery as $dist){
+					$cust_id = $dist['cust_id'];
+					$query = 'SELECT vendorname FROM vendorpage WHERE vendor_id = '. (int)$cust_id;
+					$selectquery1 = $resource->fetchRow($query);
+				?>
+				<tr class="<?php if($i%2==0){echo 'even';}?> pointer">
+				<td><?php echo $dist['id'];?></td>
+				<td><?php echo $dist['cust_id'];?></td>
+				<td><?php echo $selectquery1['vendorname'];?></td>
+				<td><?php echo $dist['cname'];?></td>
+				<td><?php echo $dist['cemail'];?></td>
+				<td><?php echo $dist['cphone'];?></td>
+				<td><?php echo $dist['cstreet'].'<br>'.$dist['ccity'].'<br>'.$dist['cstate'].'<br>'.$dist['czipcode'].'<br>'.$dist['ccountry'];?></td>
+				<td><?php echo $dist['cshipcompany'];?></td>
+				<td><?php echo $dist['cshipaccount'];?></td>
+				</tr>
+				<?php
+				$i++;
+				}
+				?>
+			</tbody>
+		</table>
+	</div>
+</div>

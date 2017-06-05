@@ -1,0 +1,139 @@
+<?php 
+$pdfcontent = Mage::registry('pdfflyercontent');
+$cust_id = $pdfcontent['id'];
+$flytemplate = $pdfcontent['flytemplate'];
+$flyername = $pdfcontent['flyername'];
+$headertext = $pdfcontent['headertext'];
+$footertext = $pdfcontent['footertext'];
+$logo = $pdfcontent['logo'];
+$logocustom = $pdfcontent['logocustom'];
+$prod_ids = $pdfcontent['flysearchvalues'];
+$prodArray = explode(',', $prod_ids);
+$countary = count($prodArray);
+$coreResource = Mage::getSingleton('core/resource');
+$conn = $coreResource->getConnection('core_read');
+$query = 'SELECT * FROM vendorpage WHERE vendor_id='.$cust_id;
+$results = $conn->fetchRow($query);
+$vendurl = Mage::getBaseUrl().'shop/'.$results['vendorname'];
+$vendor_url = Mage::getBaseUrl().'shop/'.$results['vendorname'].'/prodid/';
+if($flytemplate =='teaser'){
+$mailsend = '<table style="width:100%;border: 1px solid #000000;background: #FFFFFF;">
+<tr>
+		<td style="border-bottom: 1px solid #131313;">';
+if($logo){
+$mailsend .= '<img src="'.$logo.'" style="width: 100px;"/>';
+}
+$mailsend .= '</td><td style="border-bottom: 1px solid #131313;"></td>
+<td style="border-bottom: 1px solid #131313;">';
+if($logocustom){
+$mailsend .='<img src="'.$logocustom.'" style="width: 100px;"/>';
+} else { 
+$mailsend .='<p>'.$headertext.'</p>';
+}
+
+$mailsend .='</td>
+	</tr>';
+$i=1;
+	foreach ($prodArray  as $prodid){
+		if(($i==1)||($i % 3 == 1)){
+		$mailsend .='<tr>';
+		}
+		$obj = Mage::getModel('catalog/product');
+		$_product = $obj->load($prodid);
+		$_helper = $this->helper('catalog/output');
+$mailsend .='<td style="padding: 20px;"><div>
+		<a href="'.$vendor_url.$prodid.'" title="'.$this->stripTags($this->getImageLabel($_product, 'small_image'), null, true).'" class="product-image">
+								<img id="product-collection-image-'.$_product->getId().'"
+								src="'.$this->helper('catalog/image')->init($_product, 'small_image')->resize(150,150).'"
+								alt="'.$this->stripTags($this->getImageLabel($_product, 'small_image'), null, true).'" />
+		</a>
+		</div>
+		<div>
+		<a href="'.$vendor_url.$prodid .'" title="'.$this->stripTags($_product->getName(), null, true).'">';
+		if( strlen($_helper->productAttribute($_product, $_product->getName(), 'name')) > 100 ){
+$mailsend .= substr($_helper->productAttribute($_product, $_product->getName(), 'name'), 0, 100);
+		} else {
+$mailsend .= $_helper->productAttribute($_product, $_product->getName(), 'name');
+		}
+$mailsend .='</a>
+		</div>
+		<div>
+		<div class="prod_sku"><span>'.$this->__('Style:').'</span>'. $_product->getSKU().'</div>
+		</div>
+		<div>
+		<div class="wishlist-compare prod_id">'.$_product->getPriceHtml($_product, true).'</div>
+		</div>
+		</td>';
+		if($i % 3 == 0){
+		$mailsend .='</tr>';
+		}
+		$i++;
+	}
+$mailsend .='
+<tr><td colspan="3" style="background:#FFFFFF;padding:5px;text-align:center;border-top: 1px solid #131313;">'.$footertext.'</td></tr>
+<tr>
+			<td style="background:#FFFFFF;padding:5px;text-align:center;border-top: 1px solid #131313;"><a href="'.$vendurl.'">'.$results['vendorname'].'</a></td>
+			<td style="background:#FFFFFF;padding:5px;text-align:center;border-top: 1px solid #131313;">'.$results['vendoremail'].'</td>
+			<td style="background:#FFFFFF;padding:5px;text-align:center;border-top: 1px solid #131313;">'.$results['address'].'</td>
+	  </tr>
+</table>';
+}else{
+$mailsend = '<table style="width:100%;border: 1px solid #000000;background: #FFFFFF;">
+<tr>
+		<td style="border-bottom: 1px solid #131313;">';
+if($logo){
+$mailsend .= '<img src="'.$logo.'" style="width: 100px;"/>';
+}
+$mailsend .= '</td><td style="border-bottom: 1px solid #131313;""></td>
+<td style="border-bottom: 1px solid #131313;">';
+if($logocustom){
+$mailsend .='<img src="'.$logocustom.'" style="width: 100px;"/>';
+} else { 
+$mailsend .='<p>'.$headertext.'</p>';
+}
+
+$mailsend .='</td>
+	</tr>';
+foreach ($prodArray  as $prodid){
+		$obj = Mage::getModel('catalog/product');
+		$_product = $obj->load($prodid);
+		$_helper = $this->helper('catalog/output');
+$mailsend .='<tr>
+			<td>
+				<div class="product-image">
+					<a href="'.$vendor_url.$prodid.'" class="product-img" title="'.$this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) .'">
+						<img id="product-collection-image-'.$_product->getId().'"
+						src="'.$this->helper('catalog/image')->init($_product, 'small_image')->resize(150,150).'"
+						alt="'.$this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) .'" />
+					</a>
+				</div>
+			</td>
+			<td>
+				<div>
+					<a href="'.$vendor_url.$prodid.'" title="'.$this->stripTags($_product->getName(), null, true).'">';
+					if( strlen($_helper->productAttribute($_product, $_product->getName(), 'name')) > 100 ){
+$mailsend .=substr($_helper->productAttribute($_product, $_product->getName(), 'name'), 0, 100);
+						} else {
+$mailsend .=$_helper->productAttribute($_product, $_product->getName(), 'name');
+						}
+$milsend .='</a>
+				</div> 
+				<div><span>Style:</span>'.$_product->getSKU().'</div>
+				<div><span>Description:</span>'.$_product->getDescription().'</div>
+			</td>
+		</tr>';
+ }
+ $mailsend .='
+ <tr><td colspan="3" style="background:#FFFFFF;padding:5px;text-align:center;border-top: 1px solid #131313;">'.$footertext.'</td></tr>
+ <tr>
+		<td style="background:#FFFFFF;padding:5px;text-align:center;border-top: 1px solid #131313;"><a href="'.$vendurl.'">'.$results['vendorname'].'</a></td>
+		<td style="background:#FFFFFF;padding:5px;text-align:center;border-top: 1px solid #131313;">'.$results['vendoremail'].'</td>
+		<td style="background:#FFFFFF;padding:5px;text-align:center;border-top: 1px solid #131313;">'.$results['address'].'</td>
+	  </tr>
+</table>';
+}
+
+$write = Mage::getSingleton('core/resource')->getConnection('core_write');
+$sql  = "INSERT INTO `pdf_flyer`(`user_id`,`flyername`,`pdf_data`) VALUES ($cust_id,'$flyername','$mailsend')";
+$write->query($sql);
+echo 'Created PDF Flyer, you can now send the email';

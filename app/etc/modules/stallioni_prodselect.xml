@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <stallioni_prodselect>
+			<active>true</active>
+			<codePool>local</codePool>
+			<version>1.0.0</version>
+        </stallioni_prodselect>        
+    </modules>
+	<global>
+		<block>
+			<stallioni_prodselect>
+				<class>Stallioni_Prodselect_Block</class>
+			</stallioni_prodselect>
+		</block>
+		<models>
+            <stallioni_prodselect>
+                <class>Stallioni_Prodselect_Model</class>
+                <resourceModel>prodselect_resource</resourceModel>
+            </stallioni_prodselect>
+            <prodselect_mysql4>
+                <class>Stallioni_Prodselect_Model_Mysql4</class>
+            </prodselect_mysql4>
+             <prodselect_resource>
+				<class>Stallioni_Prodselect_Model_Resource</class>
+			</prodselect_resource>
+          </models>
+		<helpers>
+			<prodselect>
+				<class>Stallioni_Prodselect_Helper</class>
+			</prodselect>
+		</helpers>
+	</global>
+</config>
+

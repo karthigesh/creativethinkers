@@ -1,0 +1,57 @@
+<?php 
+$_helper =  Mage::helper('catalog/output');
+$product_id =954;
+$obj = Mage::getModel('catalog/product');
+$_product = $obj->load($product_id); 
+
+$cartHelper = Mage::helper('checkout/cart');
+$items = $cartHelper->getCart()->getItems();
+foreach ($cartItems as $item) {
+    if ($item->getProduct()->getId() == $product_id) {
+        $itemId = $item->getItemId();
+        $cartHelper->getCart()->removeItem($itemId)->save();
+        break;
+    }
+}
+
+?>
+<div class="orderfull-dashboard">
+	<div class="page-title">
+        <h1><?php echo $this->__('Order Complimentary Sample Kit');?></h1>
+    </div>
+<?php
+  $formkey = Mage::getSingleton('core/session')->getFormKey(); 
+  $baseurl = Mage::getBaseUrl();
+?>
+<div class="product-view">
+    <div class="product-essential">
+    <form action="<?php echo $this->getSubmitUrl($_product, array('_secure' => $this->_isSecure())) ?>" method="post" id="product_addtocart_form"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+        <?php echo $this->getBlockHtml('formkey') ?>
+        <div class="no-display">
+            <input type="hidden" name="product" value="<?php echo $_product->getId() ?>" />
+            <input type="hidden" name="related_product" id="related-products-field" value="" />
+        </div>
+
+        <div class="product-shop">
+			<div class="yt-detail-left col-lg-5 col-md-5 col-sm-6 col-xs-12">
+				<div class="product-img-box">
+				<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('order_comple_sample')->toHtml(); ?>
+				</div>
+			</div>
+			<div class="yt-detail-right col-lg-7 col-md-7 col-sm-6 col-xs-12 ">
+				<?php if ($_product->getShortDescription()):?>
+                <div class="short-description">
+                    <div class="std"><?php echo $_helper->productAttribute($_product, nl2br($_product->getShortDescription()), 'short_description') ?></div>
+                </div>
+            <?php endif;?>
+            <a class="order-but" href="<?php echo $baseurl;?>checkout/cart/add/product/<?php echo $product_id;?>/qty/1/form_key/<?php echo $formkey;?>/?return_url=<?php echo $baseurl;?>checkout/onepage/">
+					<?php echo $this->__('Free Order');?>
+				</a>
+            
+			</div>            
+        </div>
+    </form>
+   </div>
+ </div>
+</div>
+

@@ -1,0 +1,278 @@
+<?php
+/***
+ * 
+ * 
+ * 
+ * 
+ * Vendor module
+ * karthigesh
+ * vendor admin section
+ * 
+ ***/
+ 
+ if(Mage::getSingleton('customer/session')->isLoggedIn()) {
+     $customerData = Mage::getSingleton('customer/session')->getCustomer();
+      $customer_id = $customerData->getId();
+      $customer_email = $customerData->getEmail();
+ }
+ $baseurl = Mage::getBaseUrl();
+ $resource = Mage::getSingleton('core/resource')->getConnection('core_read');
+ $query = 'SELECT * FROM vendorpage WHERE vendor_id = '. (int)$customer_id;
+ $selectquery = $resource->fetchAll($query);
+ $selectquery1 = $resource->fetchRow($query);
+ ?>
+ 
+ <div class="vendor-dashboard">
+	<div class="page-title">
+        <h1><?php echo $this->__('CREATE / EDIT Website');?></h1>
+    </div>
+    <div class="vendor-panel">
+		<?php 
+		$count = count($selectquery);
+		if($count=='1')
+			{
+			
+				echo '<table>
+				<tr>
+				<td style="width: 10%;"><h2 style="font-size: 20px;padding: 5px;">Name</h2></td>
+				<td style="width: 25%;"><h2 style="font-size: 20px;padding: 5px;">Logo</h2></td>
+				<td style="width: 10%;"><h2 style="font-size: 20px;padding: 5px;">Phone</h2></td>
+				<td style="width: 20%;"><h2 style="font-size: 20px;padding: 5px;">Email</h2></td>
+				<td style="width: 25%;"><h2 style="font-size: 20px;padding: 5px;">Address</h2></td>
+				<td style="width: 10%;"></td>
+				</tr>
+				<tr>
+				<td>'.$selectquery1['vendorname'].'</td>
+				<td><img src="'.$selectquery1['vendorlogo'].'" style="width:100%;"/>
+				<button id="logoedit" class="button">Edit logo</button>
+				</td>
+				<td>'.$selectquery1['vendorphone'].'</td>
+				<td>'.$selectquery1['vendoremail'].'</td>
+				<td>'.$selectquery1['address'].'</td>
+				<td>
+				<form id="vsectionedit">
+				<input type="hidden" id="vendorid" name="vendorid" value="'.$selectquery1['vendor_id'].'"/>
+				<button type="submit" id="vendorsubedit" class="button">Edit</button>
+				</form></td>
+				</tr>
+				</table>';
+				?>
+	<div class="distsection">
+	<div class="distpage"><strong><?php echo $this->__('Your Distributor Page is: ');?></strong><a href="<?php echo $baseurl.'shop/'.$selectquery1['vendorname'].'/';?>"><?php echo $baseurl.'shop/'.$selectquery1['vendorname'].'/';?></a></div>
+	<div class="distpage"><strong><?php echo $this->__('To create an "About Us" page: ');?></strong><a href="<?php echo $baseurl.'about/';?>"><?php echo $this->__('Please click here.');?></a></div>
+	<div class="distpage"><strong><?php echo $this->__('Any email inquiries from the site will be sent to: ');?></strong><?php echo $customer_email;?></div>
+	</div>
+	<div id="vendoraftersubmit">
+		<div id="success"></div>
+	<form method="POST" name="vendorselect" id="vendorselect">
+			<div class="vendor">
+				<div class="ven-a"><?php echo $this->__('Vendor Name');?></div>
+				<div class="ven-b"><input type="text" name="vendorname" id="vendorname" value="<?php echo $selectquery1['vendorname'];?>"/></div>				
+			</div>
+			<div class="vendor">
+				<div class="ven-a"><?php echo $this->__('Vendor Phone');?></div>
+				<div class="ven-b"><input type="tel" name="vendortel" id="vendortel" value="<?php echo $selectquery1['vendorphone'];?>"></div>				
+			</div>
+			<div class="vendor">
+				<div class="ven-a"><?php echo $this->__('Vendor Email');?></div>
+				<div class="ven-b"><input type="email" name="vendoremail" id="vendoremail" value="<?php echo $selectquery1['vendoremail'];?>"></div>				
+			</div>
+			<div class="vendor">
+				<div class="ven-a"><?php echo $this->__('Vendor Address');?></div>
+				<div class="ven-b"><textarea name="vendaddress" id="vendaddress" rows="5" cols="30"><?php echo $selectquery1['address'];?></textarea></div>				
+			</div>
+			<div class="vendor">
+				<div class="ven">
+					<input type="hidden" name="cust_id" id="cust_id" value="<?php echo $customer_id;?>"/>
+					<button type="submit" id="vendorselectsubmit" name="vendorselectsubmit"><?php echo $this->__('Submit');?></button>
+				</div>
+			</div>
+		</form>
+		</div>
+		<div class="logoupload">
+			<div id="logosuccess"></div>
+			<h2 class="vendorlogohint"><?php echo $this->__('If needed you can change the logo by uploading the new logo here.');?></h2>
+			<form method="POST" name="vendorlogochange" id="vendorlogochange">
+				<div class="vendor">
+				<div class="ven-a"><?php echo $this->__('Vendor Logo');?></div>
+				<div class="ven-b"><input type="file" name="vendornewlogo" id="vendornewlogo" accept="image/*"/>
+				<h2 style=""><strong>Hint:</strong>Upload logo should not exceed 222 x 89 pixels and background is always prefered to be white.</h2></div>				
+				</div>
+				<div class="vendor">
+				<div class="ven">
+					<input type="hidden" name="cust_id" id="cust_id" value="<?php echo $customer_id;?>"/>
+					<button type="submit" id="vendorlogosubmit" name="vendorlogosubmit"><?php echo $this->__('Submit');?></button>
+				</div>
+			</div>			
+			</form>
+		</div>
+		<?php }else{						
+		?>
+		<div id="success"></div>
+		<form method="POST" name="vendorfselect" id="vendorfselect">
+			<div class="vendor">
+				<div class="ven-a"><?php echo $this->__('Vendor Name');?></div>
+				<div class="ven-b"><input type="text" name="vendorname" id="vendorname" value=""/></div>				
+			</div>
+			<div class="vendor">
+				<div class="ven-a"><?php echo $this->__('Vendor Logo');?></div>
+				<div class="ven-b"><input type="file" name="vendorlogo" id="vendorlogo" accept="image/*"/>
+				<h2 style=""><strong>Hint:</strong>Upload logo should not exceed 222 x 89 pixels and background is always prefered to be white.</h2></div>				
+			</div>
+			<div class="vendor">
+				<div class="ven-a"><?php echo $this->__('Vendor Phone');?></div>
+				<div class="ven-b"><input type="tel" name="vendortel" id="vendortel"></div>				
+			</div>
+			<div class="vendor">
+				<div class="ven-a"><?php echo $this->__('Vendor Email');?></div>
+				<div class="ven-b"><input type="email" name="vendoremail" id="vendoremail" value="<?php echo $selectquery1['vendoremail'];?>"></div>				
+			</div>
+			<div class="vendor">
+				<div class="ven-a"><?php echo $this->__('Vendor Address');?></div>
+				<div class="ven-b"><textarea name="vendaddress" id="vendaddress" rows="5" cols="30"></textarea></div>				
+			</div>
+			<div class="vendor">
+				<div class="ven">
+					<input type="hidden" name="cust_id" id="cust_id" value="<?php echo $customer_id;?>"/>
+					<button type="submit" id="vendorfselectsubmit" name="vendorfselectsubmit"><?php echo $this->__('Submit');?></button>
+				</div>
+			</div>
+		</form>
+		<?php }?>
+    </div>
+</div>
+<script>
+	jQuery('#vendoraftersubmit').css('display','none');
+	jQuery('.logoupload').css('display','none');
+	jQuery('#logoedit').click(function(){
+		jQuery('.logoupload').toggle();
+		jQuery('#vendoraftersubmit').hide();
+		return false;
+	});
+	jQuery('#vendorsubedit').click(function(){
+		jQuery('.logoupload').hide();
+		jQuery('#vendoraftersubmit').toggle();
+		return false;
+	});
+	jQuery('#vendorselectsubmit').click(function(){		
+		var vendname = jQuery('#vendorname').val();
+		var vendphone = jQuery('#vendortel').val();
+		var vendaddr = jQuery('#vendaddress').val();
+		var vendemail = jQuery('#vendoremail').val();
+		var cust_id = jQuery('#cust_id').val();
+		var baseurl = '<?php echo $baseurl;?>';
+		var formData = new FormData(jQuery('#vendorselect')[0]);
+		var intRegex = /[0-9 -()+]+$/;
+		var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+		if(vendname ==""){
+			alert('please give the vendor name!');
+			return false;
+		}else if((vendphone.length < 10) || (vendphone.length > 12) || (!intRegex.test(vendphone))){
+			 alert('Please enter a valid phone number.');
+			 return false;
+		}else if(vendaddr ==""){
+			alert('please add your address');
+			return false;
+		}else if((vendemail == "")||(!emailReg.test(vendemail))){
+			alert('please enter valid email address.');
+			return false;
+		}else{
+			jQuery.ajax({
+							url: baseurl+'vendorpage/index/vendoroldsaves/',
+							type: 'POST',
+							data: formData,
+							async: false,            
+							success: function (data) {
+								if(data='committed'){
+									html = '<div class="msgsuccess">Success. Vendor details have been successfully Altered!</div>';
+									jQuery('#success').append(html);
+									setTimeout(function() {
+									jQuery('.msgsuccess').remove();
+									}, 3500);
+								}
+							},
+							cache: false,
+							contentType: false,
+							processData: false
+		});
+		}
+		return false;
+	});
+	jQuery('#vendorfselectsubmit').click(function(){		
+		var vendname = jQuery('#vendorname').val();
+		var vendlogo = jQuery('#vendorlogo').val();
+		var vendphone = jQuery('#vendortel').val();
+		var vendemail = jQuery('#vendoremail').val();
+		var vendaddr = jQuery('#vendaddress').val();
+		var cust_id = jQuery('#cust_id').val();
+		var baseurl = '<?php echo $baseurl;?>';
+		var formData = new FormData(jQuery('#vendorfselect')[0]);
+		var intRegex = /[0-9 -()+]+$/;
+		var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+		if(vendname ==""){
+			alert('please give the vendor name!');
+			return false;
+		}else if(vendlogo ==""){
+			alert('please upload the logo!');
+			return false;
+		}else if((vendphone.length < 10) || (vendphone.length > 12) || (!intRegex.test(vendphone))){
+			 alert('Please enter a valid phone number.');
+			 return false;
+		}else if((vendemail == "")||(!emailReg.test(vendemail))){
+			alert('please enter valid email address.');
+			return false;
+		}else if(vendaddr ==""){
+			alert('please add your address');
+			return false;
+		}else{
+			jQuery.ajax({
+							url: baseurl+'vendorpage/index/vendorsaves/',
+							type: 'POST',
+							data: formData,
+							async: false,            
+							success: function (data) {
+								if(data='committed'){
+									html = '<div class="msgsuccess">Success. Vendor details have been successfully saved</div>';
+									jQuery('#success').append(html);
+									setTimeout(function() {
+									jQuery('.msgsuccess').remove();
+									}, 3500);
+								}
+							},
+							cache: false,
+							contentType: false,
+							processData: false
+		});
+		}
+		return false;
+	});
+	jQuery('#vendorlogosubmit').click(function(){
+		var baseurl = '<?php echo $baseurl;?>';
+		var vendlogo = jQuery('#vendornewlogo').val();
+		var formData = new FormData(jQuery('#vendorlogochange')[0]);
+		if(vendlogo ==""){
+			alert('please upload the logo!');
+			return false;
+		}else{
+			jQuery.ajax({
+							url: baseurl+'vendorpage/index/vendorlogosaves/',
+							type: 'POST',
+							data: formData,
+							async: false,            
+							success: function (data) {
+								if(data='committed'){
+									html = '<div class="msgsuccess">Success. Vendor Logo has been changed successfully</div>';
+									jQuery('#logosuccess').append(html);
+									setTimeout(function() {
+									jQuery('.msgsuccess').remove();
+									}, 3500);
+								}
+							},
+							cache: false,
+							contentType: false,
+							processData: false
+		});
+		}
+		return false;
+	});
+</script>

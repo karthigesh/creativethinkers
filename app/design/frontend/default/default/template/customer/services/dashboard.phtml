@@ -1,0 +1,15 @@
+<?php 
+/***********
+ * for the display of the two pdf links in the website
+ * 
+ * 
+ */
+?>
+<div class="netcode-dashboard">
+	<div class="page-title">
+        <h1><?php echo $this->__('View Net & Coded Pricing');?></h1>
+    </div>
+<?php
+ echo $this->getLayout()->createBlock('cms/block')->setBlockId('view_net_coded_pricing')->toHtml(); 
+?>
+</div>

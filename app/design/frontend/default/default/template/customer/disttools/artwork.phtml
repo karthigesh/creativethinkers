@@ -1,0 +1,15 @@
+<?php 
+/***********
+ * for the display of the two pdf links in the website
+ * 
+ * 
+ */
+?>
+<div class="artworkupload">
+	<div class="page-title">
+        <h1><?php echo $this->__('Upload Your Artwork');?></h1>
+    </div>
+<?php
+ echo $this->getLayout()->createBlock('cms/block')->setBlockId('artwork')->toHtml(); 
+?>
+</div>

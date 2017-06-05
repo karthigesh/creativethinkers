@@ -1,0 +1,83 @@
+<?php 
+$vendorname = Mage::registry('vendorname');
+$vendortitle = str_replace('-', ' ', $vendorname);
+$baseurl = Mage::getBaseUrl();
+$request = Mage::helper('core/url')->getCurrentUrl();
+?>
+<div id="yt_footer" class="yt-footer wrap">
+        	
+	<div class="social-fixed">        
+		<div class="socials-wrap">
+			<ul>
+				<li><div class="fb-share-button" data-href="<?php echo $request;?>" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="icon-facebook fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $request;?>&amp;src=sdkpreparse"></a></div></li>
+				<li><a title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=<?php echo $request;?>&title=<?php echo $vendorname;?>&summary=&source=" target="_blank" class="icon-linkedin"></a></li>
+				<li><a title="Pinterest" href="https://pinterest.com/pin/create/button/?url=<?php echo $request;?>&media=<?php echo $request;?>&description=<?php echo $vendorname;?>" target="_blank" class="icon-pinterest"></a></li>				
+			</ul>
+		</div>   			
+	</div>
+	<div class="footer-top">  
+		<div class="container">
+			<div class="row">          				                                            
+					<div class="spotlight-wrap">
+							<div class="spotlight spotlight1">
+							<div class="block-title">Company</div>
+							<div class="block-content">
+							<ul>
+							<li><a href="<?php echo $baseurl.'shop'.DS.$vendorname.DS;?>">Home</a></li>
+							<li><a href="<?php echo $baseurl.'shop'.DS.$vendorname.DS.'about'.DS?>">About Us</a></li>
+							<li><a href="<?php echo $baseurl.'shop'.DS.$vendorname.DS.'contact'.DS?>">Contact Us</a></li>
+							<li><a href="<?php echo $baseurl.'shop'.DS.$vendorname.DS.'howtoorder'.DS?>">How To Order</a></li>
+							</ul>
+							</div>
+							</div>
+							<div class="spotlight spotlight2">
+							<div class="block-title">Caps</div>
+							<div class="block-content">
+							<ul>
+							<li><a href="<?php echo $baseurl.'shop'.DS.$vendorname.DS.'catid/136/';?>">Winter Collection</a></li>
+							<li><a href="<?php echo $baseurl.'shop'.DS.$vendorname.DS.'catid/72/';?>">Trucker Styles</a></li>
+							<li><a href="<?php echo $baseurl.'shop'.DS.$vendorname.DS.'catid/4/';?>">*** Most Popular ***</a></li>
+							<li><a href="<?php echo $baseurl.'shop'.DS.$vendorname.DS.'catid/5/';?>">Pro Collection</a></li>
+							<li><a href="<?php echo $baseurl.'shop'.DS.$vendorname.DS.'catid/6/';?>">Contrast Stitching Caps</a></li>
+							</ul>
+							</div>
+							</div>
+					</div>
+			</div>
+		</div>
+	</div><!-- footer top-->
+	<div class="footer-bottom"> 
+        <div class="container">
+            <div class="row">          	
+            	<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 yt-copyright">
+        			<p>© 2016 <?php echo $vendortitle;?>. All Rights Reserved. Designed by <a href="http://stallioni.com/" target="_blank">stallioni</a></p></div>
+            	<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 yt-payment">
+					            		
+            	</div>
+            </div>
+        </div>
+    </div><!-- footer bottom-->
+<a id="yt-totop" href="#" title="Go to Top" style="display: block;"></a>
+<script type="text/javascript">
+	jQuery(document).ready(function($){  
+		$("#yt-totop").hide();
+		$(function () {
+			var wh = $(window).height();
+			var whtml =  $(document).height();
+			$(window).scroll(function () {
+				if ($(this).scrollTop() > whtml/10) {
+					$('#yt-totop').fadeIn();
+				} else {
+					$('#yt-totop').fadeOut();
+				}
+			});
+			$('#yt-totop').click(function () {
+				$('body,html').animate({
+					scrollTop: 0
+				}, 800);
+				return false;
+			});
+		});
+	});
+</script>
+</div><!-- yt footer-->

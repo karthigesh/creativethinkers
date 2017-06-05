@@ -1,0 +1,42 @@
+<?php
+$proddetails = Mage::registry('vendorsingleproduct');
+$vendorname = Mage::registry('vendorname');
+$_product = Mage::getModel('catalog/product')->load($proddetails);
+$tierprice = $_product['tier_price'];
+if (count($tierprice) > 0):
+    $_data = array();
+    $_prevQty = 0;
+    $_counter = 0;
+    $tierprice = array_reverse($tierprice);
+    foreach ($tierprice as $_index => $_price){
+		if($_price['cust_group']=='1'){
+			$_counter++;
+            $label = round($_price['price_qty']);
+            $price = round($_price['website_price'],2);
+            $_data[] = array('prev'=>$_prevQty,'next'=>$label,'label'=>$label,'price'=>$price);
+            $_prevQty =round($_price['price_qty']);
+		}
+    }
+    $_data = array_reverse($_data);
+?>
+<h3><strong>PRICING</strong></h3>
+<div class="fw">
+    <table class="tiered-pricing">
+        <tbody>                    
+        <?php $label = '<td><b>Quantity</b></td>';
+        $price = '<td><b>Pricing</b></td>';
+        foreach ($_data as $_row):
+			$label .= '<td><b>'. $_row['label'] .'</b></td>';
+			$price .= '<td>'. $_row['price'] .'</td>';
+		endforeach;
+		$label .= '<td></td>';
+		$price .= '<td>5A</td>';
+			echo '<tr>'. $label .'</tr>';
+			echo '<tr>'. $price .'</tr>'; ?>
+        
+        </tbody>
+    </table>
+    </div>
+<?php
+endif;
+?>

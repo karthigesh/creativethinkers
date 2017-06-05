@@ -1,0 +1,33 @@
+<?php
+$flyer_email_content = Mage::registry('flyer_email_content');
+$admin_email = $flyer_email_content['adminemail'];
+$user_id = Mage::registry('user_id');
+$email = $flyer_email_content['toemail'];
+$subject = $flyer_email_content['esub'];
+$date = date("Y-m-d");
+$read = Mage::getSingleton('core/resource')->getConnection('core_read');
+$sql  = "Select MAX(`id`) from `pdf_flyer` WHERE `user_id`='$user_id'";
+$read->query($sql);
+$rows = $read->fetchAll($sql);
+$row_id = $rows['0']['MAX(`id`)'] ;
+$getsql  = "Select `pdf_data` from `pdf_flyer` WHERE `id`='$row_id'";
+$read->query($getsql);
+$getrows = $read->fetchAll($getsql); 
+$to      = $email;
+$subject = $subject;
+$message = $getrows['0']['pdf_data'];
+$headers  = 'MIME-Version: 1.0' . "\r\n";
+$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+$headers .= 'From:'. $admin_email . "\r\n" .
+    'Reply-To:'. $admin_email .  "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
+$mail=mail($to, $subject, $message, $headers);
+/*enters the email id to database*/
+$write = Mage::getSingleton('core/resource')->getConnection('core_write');
+$sql  = "UPDATE `pdf_flyer` SET `date`='$date',`email`='$email' WHERE `id`='$row_id'";
+$write->query($sql);
+if($mail){
+	echo '<div class="sucesdiv" style="background: green;border: 3px double #5DEA5D;color: white;font-size: 14px;text-transform: capitalize;text-align: center;">email has been sent</div>';
+}else{
+  echo '<div class="sucesdiv" style="background: #D43C2D;border: 3px double #FFFFFF;color: white;font-size: 14px;text-transform: capitalize;text-align: center;">Sorry! email was not sent</div>'; 
+}

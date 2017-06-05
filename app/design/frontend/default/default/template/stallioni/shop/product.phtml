@@ -1,0 +1,108 @@
+<?php
+$_helper =  Mage::helper('catalog/output');
+$proddetails = Mage::registry('vendorsingleproduct');
+$var_value = Mage::registry('vendordetails');
+$vendorname = Mage::registry('vendorname');
+$vendortitle = str_replace('-', ' ', $vendorname);
+$baseurl = Mage::getBaseUrl();
+$vendor_id = $var_value['vendor_id'];
+$vendorname = $var_value['vendorname'];
+$vendortitle = str_replace('-', ' ', $vendorname);
+$vendorlogo = $var_value['vendorlogo'];
+$vendorphone = $var_value['vendorphone'];
+$address = $var_value['address'];
+$vendor_url = $var_value['vendor_url'];
+$_product = Mage::getModel('catalog/product')->load($proddetails); 
+$package_name = Mage::getStoreConfig('design/package/name');
+$skin_img_url = $baseurl.'skin/frontend/'.$package_name.'/default/';
+global $show_rich_snippet;
+$show_rich_snippet = 1;
+$rich_snippet = Mage::getStoreConfig('market_cfg/rich_snippets_setting/use_rich_snippet');
+?>
+<div id="yt_content" class="yt-content wrap">
+	<div id="yt_main" class="yt-main col-main">
+        		<div class="yt-main-inner yt-content-inner">
+	        		<div class="container">
+		                <div class="row"> 
+							<div id="yt_pathway" class="clearfix">
+								<div class="pathway-inner">
+									<ul class="breadcrumbs">
+										<div class="breadcrumbs-content">
+										<li class="home" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+										<a itemprop="url" href="<?php echo $baseurl.'shop'.DS.$vendorname.DS;?>" title="Go to Home Page" class="has-link">
+										<span itemprop="title">Home</span>
+										</a>
+										</li>
+										<li class="product last" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+										<?php echo $_helper->productAttribute($_product, $this->htmlEscape($_product->getName()), 'name') ?></li>
+										</div>
+									</ul>
+								</div><!--pathway-inner-->
+							</div><!--yt_pathway-->
+							<div class="columns-w">
+								<div id="messages_product_view"> 
+									<img src="<?php echo $skin_img_url;?>images/product_caption.png"/>
+								</div>
+								<div class="yt-product-detail">
+									<div class="yt-product-detail-inner">
+										<div class="product-essential">
+											<div class="yt-detail-left col-lg-5 col-md-5 col-sm-6 col-xs-12">
+											<?php $block1 = $this->getLayout()->createBlock('core/template');
+											$block1->setTemplate('stallioni/shop/productimage.phtml');
+											echo $block1->toHtml();
+											?>
+											</div><!--yt-detail-left-->
+											<div class="yt-detail-right col-lg-7 col-md-7 col-sm-6 col-xs-12">
+												<?php echo $this->getBlockHtml('formkey') ?>
+												<div class="no-display">
+												<input type="hidden" name="product" value="<?php echo $_product->getId() ?>" />
+												</div>			
+
+												<div class="product-shop">
+													<div class="product-name" <?php if ( $rich_snippet == 1 ) {?>itemprop="name"<?php }?>>
+													<h1><?php echo $_helper->productAttribute($_product, $this->htmlEscape($_product->getName()), 'name') ?></h1>
+													<p style="font-size: 14px;font-weight: bold;color: black;margin-top: 5px;"><?php echo 'Item No:&nbsp;'.$_product->getSku(); ?></p>
+													</div>	
+													<?php if ($_product->getDescription()):
+													echo $_product->getDescription();
+													endif;?>         						
+													<?php if ($_product->getShortDescription()):?>					
+													<div class="short-description">
+													<?php echo $_product->getshort_description(); ?>
+													</div>
+													<?php endif;?>
+													<?php echo 'hi';?>
+													<?php $block2 = $this->getLayout()->createBlock('core/template');
+													$block2->setTemplate('stallioni/shop/prodtierprice.phtml');
+													echo $block2->toHtml();
+													?>
+													<?php if($this->getLayout()->createBlock('cms/block')->setBlockId('custom-block-detail')->toHtml()) { ?>
+													<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('custom-block-detail')->toHtml();?>
+													<?php } ?>																
+												</div><!--product shop-->
+											</div><!--yt-detail-right-->
+											<div style="clear:both;"></div>
+											<?php /****** Fabric Selection Starts*******/?>
+												<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+													<?php 
+														Mage::register('fabricselect', $_product);
+														$block4 = $this->getLayout()->createBlock('core/template');
+														$block4->setTemplate('stallioni/shop/fabricselect.phtml');
+														echo $block4->toHtml();
+													?>
+												</div>
+											<?php /****** Fabric Selection Ends *******/?>
+											<div style="clear:both;"></div>
+											<?php $block3 = $this->getLayout()->createBlock('core/template');
+											$block3->setTemplate('stallioni/shop/prodattributes.phtml');
+											echo $block3->toHtml();
+											?>
+										</div><!--product essential-->
+									</div><!--yt-product-detail-inner-->
+								</div><!--yt-product-detail-->
+							</div><!--columns-w-->
+						</div><!--row-->
+					</div><!--container-->
+				</div><!--yt content inner-->
+	</div><!--yt main-->			
+</div><!--yt content-->

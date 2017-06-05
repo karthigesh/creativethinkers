@@ -1,0 +1,263 @@
+<?php
+$proddetails = Mage::registry('vendorsingleproduct');
+$vendorname = Mage::registry('vendorname');
+$_product = Mage::getModel('catalog/product')->load($proddetails); 
+$current_url = Mage::getBaseUrl().'shop/'.$vendorname.'/prodid/'.$_product->getId().'/';
+$vendorurl = Mage::getBaseUrl().'shop/'.$vendorname.'/';
+global $var_yttheme;
+global $show_rich_snippet;
+$show_rich_snippet = 1;
+$rich_snippet = Mage::getStoreConfig('market_cfg/rich_snippets_setting/use_rich_snippet');
+$most_popular = $_product->getResource()->getAttribute('most_popular');
+$most_popular_label = $most_popular->getFrontendLabel();
+$small_print = $_product->getResource()->getAttribute('small_print');
+$small_print_label = $small_print->getFrontendLabel();
+$baseurl = Mage::getBaseUrl();
+$mediaurl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA);
+?>
+<script>
+jQuery(document).load(function(){
+jQuery('.fancybox-button1').on("click",function(){
+   jQuery(this).fancybox();
+});
+});
+</script>
+<!--Popup option products-->
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	<?php $pdt_id = $_product->getId(); ?>
+	<div class="option-boxes">
+	<?php if ( $_product->getData('has_options')) {?>
+		<div class="other_options">
+			<button class="option_sub">
+			<a href="<?php echo $current_url;?>#sub_options"><?php echo $this->__('See More Caps of this style');?></a>
+			</button>
+		</div>
+		<?php } ?>
+		<div class="other_options">
+			<button class="option_sub">
+			<a href="<?php echo $current_url;?>#customize"><?php echo $this->__('Customize');?></a>
+			</button>
+		</div>
+		<p class="email-friend efs">
+			<a href="<?php echo $baseurl;?>sendfriend/product/send/id/<?php echo $pdt_id;?>/"><?php echo $this->__('Email to a Friend');?></a>
+		</p>
+		<div class="print">
+			<button class="ptp" onclick="window.print();"><?php echo $this->__('Print This Page');?></button>
+		</div>
+		<div class="save">
+			<button class="button1"><?php echo $this->__('Save Image');?></button>
+		</div>
+		<div class="quote">
+			<button class="button2">
+			<a href="<?php echo $baseurl; ?>formbuilder/index/view/id/1/?productid=<?php echo $pdt_id; ?>"><?php echo $this->__('Request Quote');?></a>
+			</button> 
+		</div>
+			<?php 
+				foreach ($_product->getMediaGallery('images') as $img) {
+					if ($img['disabled'] == 1) {		
+			?>
+		<div class="quote">
+			<button class="button2">
+				<a id="fabric_color"><?php echo $this->__('Fabrics/Colors');?></a>
+			</button>
+		</div>
+			<?php
+					}
+				}
+			?>
+		<div class="quote scroll">
+				<a id="most_pop_click" href="<?php echo $current_url;?>#most_pop_inner"><?php echo $this->__('View Most Popular Options');?></a>
+		</div>
+		<div class="quote scroll">
+				<a id="small_print_click" href="<?php echo $current_url;?>#small_pop_inner"><?php echo $this->__('The Small Print');?></a>
+		</div>
+	</div>
+	<?php if ( $_product->getData('has_options') ){?>
+	<div class="sub_options" id="sub_options">
+	<div class="sub_option_products">
+	<?php 
+	$options = Mage::getModel('catalog/product_option')->getProductOptionCollection($_product);
+	foreach ($options as $option) {
+		echo '<div class="block-content gallery-products">';
+		if ($option->getType() === 'radio') {
+			echo '<div class="heading heading-v1 margin-bottom-20">
+				<h2>'.$option->getDefaultTitle().'</h2>
+				</div>';
+				$values = Mage::getSingleton('catalog/product_option_value')->getValuesCollection($option);
+				echo '<div class="product-gallery" id="block-gallery">';
+				echo '<div class="block-content gallery-products">';
+				foreach ($values as $value) {
+					$mediaurl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA);
+					echo '<div class="item"><div class="item-inner">';
+					echo '<div class="product-image"><a class="fancybox-button1" data-fancybox-group="pimgroup" href="'.$mediaurl.$value->getImage1().'"><img src="'.$mediaurl.$value->getImage().'"/></a></div>';
+					echo '<div class="product-info"><div class="product-name">';
+					echo '<h2><a class="fancybox-button" href="'.$mediaurl.$value->getImage1().'">'.$value->getTitle().'</a></h2>';
+					echo '</div></div>';
+					echo '</div></div>';
+				}
+			echo '</div></div>';				
+		}
+		echo '</div>';			
+	}
+	 ?>   
+	</div>
+	</div> 
+	<?php }?>
+	<div class="customize" id="customize">
+		<div class="block-content customize-products">	
+			<div class="heading heading-v1 margin-bottom-20">
+				<h2>More Customize options</h2>
+				<p>You can customize the look and feel of the cap as you wish.</p>
+			</div>
+			<div class="slide-gallery1">
+				<div class="jCarouselLite1">
+				<ul>
+					<li style="width: 280px;height: 150px;">
+						<a href="<?php echo $vendorurl;?>fabricscolors/" target="_blank"><img src="<?php echo $mediaurl;?>wysiwyg/customizations/cust0.jpg" alt="fabrics colors" title="fabrics colors" /><div>fabrics colors</div></a>
+					</li>
+					<li style="width: 280px;height: 150px;">
+						<a href="<?php echo $vendorurl;?>puff/" target="_blank"><img src="<?php echo $mediaurl;?>wysiwyg/customizations/cust1.jpg" alt="puff embroidery" title="puff embroidery" /><div>puff embroidery</div></a>
+					</li>
+					<li style="width: 280px;height: 150px;">
+						<a href="<?php echo $vendorurl;?>structure/" target="_blank"><img src="<?php echo $mediaurl;?>wysiwyg/customizations/cust2.jpg" alt="structure profile" title="structure profile" /><div>structure profile</div></a>
+					</li>
+					<li style="width: 280px;height: 150px;">
+						<a href="<?php echo $vendorurl;?>location/" target="_blank"><img src="<?php echo $mediaurl;?>wysiwyg/customizations/cust3.jpg" alt="locations" title="locations" /><div>locations</div></a>
+					</li>
+					<li style="width: 280px;height: 150px;">
+						<a href="<?php echo $vendorurl;?>fasteners/" target="_blank"><img src="<?php echo $mediaurl;?>wysiwyg/customizations/cust4.jpg" alt="fasteners" title="fasteners" /><div>fasteners</div></a>
+					</li>
+					<li style="width: 280px;height: 150px;">
+						<a href="<?php echo $vendorurl;?>trimpizzaz/" target="_blank"><img src="<?php echo $mediaurl;?>wysiwyg/customizations/cust5.jpg" alt="trim pizzaz" title="trim pizzaz" /><div>trim pizzaz</div></a>
+					</li>
+					<li style="width: 280px;height: 150px;">
+						<a href="<?php echo $vendorurl;?>flatembroidery/" target="_blank"><img src="<?php echo $mediaurl;?>wysiwyg/customizations/cust6.jpg" alt="flat embroidery" title="flat embroidery" /><div>flat embroidery</div></a>
+					</li>
+					<li style="width: 280px;height: 150px;">
+						<a href="<?php echo $vendorurl;?>screenprinting/" target="_blank"><img src="<?php echo $mediaurl;?>wysiwyg/customizations/cust7.jpg" alt="screen printing" title="screen printing" /><div>screen printing</div></a>
+					</li>
+					<li style="width: 280px;height: 150px;">
+						<a href="<?php echo $vendorurl;?>sublimation/" target="_blank"><img src="<?php echo $mediaurl;?>wysiwyg/customizations/cust8.jpg" alt="sublimation" title="sublimation" /><div>sublimation</div></a>
+					</li>
+					<li style="width: 280px;height: 150px;">
+						<a href="<?php echo $vendorurl;?>label/" target="_blank"><img src="<?php echo $mediaurl;?>wysiwyg/customizations/cust9.jpg" alt="label" title="label" /><div>label</div></a>
+					</li>
+					<li style="width: 280px;height: 150px;">
+						<a href="<?php echo $vendorurl;?>appliques/" target="_blank"><img src="<?php echo $mediaurl;?>wysiwyg/customizations/cust10.jpg" alt="appliques" title="appliques" /><div>appliques</div></a>
+					</li>
+					<li style="width: 280px;height: 150px;">
+						<a href="<?php echo $vendorurl;?>distressing/" target="_blank"><img src="<?php echo $mediaurl;?>wysiwyg/customizations/cust11.jpg" alt="distressing" title="distressing" /><div>distressing</div></a>
+					</li>
+				</ul>
+				</div><!--jCarouselLite1-->
+				<span class="next"></span>
+				<span class="prev"></span> 
+			</div><!--slide-gallery1-->
+		</div>
+		</div> 
+		<div class="most_popup">
+			<div class="most_pop_inner" id="most_pop_inner">
+				<div class="heading heading-v1 margin-bottom-20">
+					<h2><?php echo $most_popular_label;?></h2>
+				</div>
+				<div class="most_popular"><?php echo $_product->getMostPopular();?></div>
+			</div>
+		</div>
+		<div class="small_popup">
+			<div class="small_pop_inner" id="small_pop_inner">
+				<div class="heading heading-v1 margin-bottom-20">
+					<h2><?php echo $small_print_label;?></h2>
+				</div>
+				<div class="most_popular"><?php echo $_product->getSmallPrint();?></div>
+			</div>
+		</div>
+<?php
+
+foreach ($_product->getMediaGallery('images') as $img) {
+	if ($img['disabled'] == 1) {
+		
+	?>	
+  <div class="color_palette_set">
+	<div class="color_palette margin-top-20" id="color_palette">
+		<div class="heading heading-v1 margin-bottom-20">
+		<h2>Fabrics/Colors</h2>
+		<p>More colors may be available to choose from. Please call for availability.</p>
+		</div>
+	</div>
+	<div class="palette_set" id="palette_set">			
+		<img src="<?php echo $_product->getMediaConfig()->getMediaUrl($img['file']);?>"
+					alt="<?php echo $this->htmlEscape($img['label']) ?>"
+					title="<?php echo $this->htmlEscape($img['label']) ?>" />	
+	</div>
+  </div>	
+<?php
+	}
+}
+?>
+</div>
+<script type="text/javascript">
+
+		jQuery(document).ready(function(){
+		jQuery.noConflict();
+		jQuery('.popup_background').hide();
+		jQuery(document).on( "click", ".button1",  function()
+			{				
+				var images = jQuery('#image').attr('src');
+				var small_image = jQuery('#yt_popup').attr('href');
+				var large_image = jQuery('#yt_popup').attr('href'); 
+				//alert(small_image);
+				//alert(large_image);
+				  document.getElementById("sd").src=small_image;
+				  document.getElementById("ld").src=large_image;
+				  document.getElementById("si").src=small_image;				  
+				  jQuery("#sd").prop("href", small_image);
+				  jQuery("#ld").prop("href", large_image);
+				  jQuery('.popup_background').show(1000);					
+			});
+		jQuery(document).on("click",".close_div", function()
+		{
+			jQuery('.popup_background').hide(1000);
+		});
+		jQuery('.color_palette_set').hide();
+		jQuery(document).on( "click", "#fabric_color",  function()
+			{		
+			  jQuery('.color_palette_set').toggle();		    
+			});
+			
+		function init_slide1(){			
+			device = jQuery.fn.detectDevice(); 
+			number_visible = 4;
+			if(  device =="tablet" || device =="normal" || device =="stablet" ){
+				number_visible = 2 ;
+			}
+			if( device =="mobile"){
+				number_visible = 1 ;
+			}
+			jQuery(".jCarouselLite1").jCarouselLite({
+				btnNext: ".slide-gallery1 .next",
+				btnPrev: ".slide-gallery1 .prev",
+				visible: number_visible,
+				start: 0,
+				circular: true,
+				speed: 300,
+				auto: 1500,
+				speed: 1000
+			}); 				
+		} 
+		init_slide1(); 
+		
+		jQuery('.jCarouselLite1 ul li a').each(function(){
+			if(jQuery(this).hasClass('actived')){
+				jQuery(this).parent().addClass('selected');	
+			}				
+		});
+					
+		jQuery('.jCarouselLite1 ul li a').click(function(){
+			$this = jQuery(this);
+			jQuery('.jCarouselLite1 ul li a').parent().removeClass('selected');
+			if($this.hasClass('actived')){				
+				$this.parent().addClass('selected');
+			}
+		});	
+		});
+</script>

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <stallioni_about>
+			<active>true</active>
+			<codePool>local</codePool>
+			<version>1.0.0</version>
+        </stallioni_about>        
+    </modules>
+	<global>
+		<block>
+			<stallioni_about>
+				<class>Stallioni_About_Block</class>
+			</stallioni_about>
+		</block>
+		<models>
+            <stallioni_about>
+                <class>Stallioni_About_Model</class>
+                <resourceModel>About_resource</resourceModel>
+            </stallioni_about>
+            <about_mysql4>
+                <class>Stallioni_About_Model_Mysql4</class>
+            </about_mysql4>
+             <about_resource>
+				<class>Stallioni_About_Model_Resource</class>
+			</about_resource>
+          </models>
+		<helpers>
+			<about>
+				<class>Stallioni_About_Helper</class>
+			</about>
+		</helpers>
+	</global>
+</config>
+

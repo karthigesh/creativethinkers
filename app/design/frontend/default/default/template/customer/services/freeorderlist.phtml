@@ -1,0 +1,36 @@
+<?php
+$freeordermail = Mage::registry('freeordermail');
+$baseurl = Mage::getBaseUrl();
+?>
+<div class="orderfree-dashboard">
+	<div class="page-title">
+        <h1><?php echo $this->__('Order Complimentory Sample Request lists');?></h1>
+    </div>
+    <div class="clistsection">
+		<a href="<?php echo $baseurl;?>customer/services/freeorders/"><?php echo $this->__('Order Sample');?></a>
+    </div>
+    <div class="complimentary">
+		<table id="freeorderlist" class="freeorderlist">
+			<thead>
+				<tr>
+					<th><?php echo 'Id';?></th>
+					<th><?php echo 'Name';?></th>
+					<th><?php echo 'Email';?></th>
+					<th><?php echo 'Phone Number';?></th>
+					<th><?php echo 'Address';?></th>
+					<th><?php echo 'Shipping Company';?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><?php echo $freeordermail['id'];?></td>
+					<td><?php echo $freeordermail['name'];?></td>
+					<td><?php echo $freeordermail['cemail'];?></td>
+					<td><?php echo $freeordermail['cphone'];?></td>
+					<td><?php echo $freeordermail['cstreet'].'<br>'.$freeordermail['ccity'].'<br>'.$freeordermail['cstate'].'<br>'.$freeordermail['ccountry'].'<br>'.$freeordermail['czipcode'];?></td>
+					<td><?php echo $freeordermail['cshipcompany'];?></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

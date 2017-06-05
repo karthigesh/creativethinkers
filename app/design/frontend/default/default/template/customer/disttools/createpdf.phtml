@@ -1,0 +1,522 @@
+<?php 
+/***********
+ * To get creation of pdf flyers
+ * 
+ * 
+ */
+  $package = Mage::getDesign()->getPackageName('frontend');
+  $skinurl = Mage::getBaseUrl().'skin/frontend/';
+  $skincompleteurl = $skinurl.$package.'/default/images/';
+  $baseurl =Mage::getBaseUrl();
+  $customer = Mage::getSingleton('customer/session')->getCustomer();
+  $cust_name = $customer->getName();
+  $cust_email = $customer->getEmail();
+?>
+
+<script type="text/javascript" src="<?php echo $skinurl.$package;?>/default/js/jquery.steps.min.js"></script>
+<script>
+	jQuery(document).ready(function(){
+		jQuery('#catpage').change(function(){			
+			if (jQuery('#catpage').is(':checked')){
+				jQuery('#catpage').prop('checked', true);
+			}else{
+				jQuery('#viewpage').prop('checked', true);
+			}
+			
+		});
+		jQuery('#viewpage').change(function(){
+			if (jQuery('#viewpage').is(':checked')){
+				jQuery('#viewpage').prop('checked', true);
+			}else{
+				jQuery('#catpage').prop('checked', true);
+			}
+		});
+		jQuery(function (){
+			jQuery("#wizard").steps({
+				headerTag: "h3",
+				bodyTag: "section",
+				transitionEffect: "slide",
+				onStepChanging: function (event, currentIndex, newIndex)
+						{
+							if(currentIndex ==0){
+								if(jQuery("input[name='catpage']:checked").length == 0){
+									if(jQuery("input[name='viewpage']:checked").length == 0){
+										alert('please select atleast one template');
+										return false;
+									}else{
+										var template =jQuery('#viewpage').val();
+										jQuery('#catpage').prop('checked', false);
+										jQuery('#flytemplate').val(template);
+										jQuery('#flytemplate').html(template);
+										return true;										
+									}
+								}else{
+										var template =jQuery('#catpage').val();
+										jQuery('#viewpage').prop('checked', false);
+										jQuery('#flytemplate').val(template);
+										jQuery('#flytemplate').html(template);
+										return true;
+								}
+							}
+							if(currentIndex ==1){
+								var oldflysearch = jQuery('#flysearchvalues').val();
+								if(oldflysearch != ""){
+								var catArr = [];
+								jQuery(".prod_id input[type='checkbox']").each(function(){									
+									var sThisVal = (this.checked ? 1 : 0);
+									if(sThisVal){ 
+										var p_id = jQuery(this).attr('data-product');							
+										catArr.push( p_id );							
+									}	
+																	
+								});	
+								if(catArr !=""){								 
+									 catArr = catArr +','+ oldflysearch;
+								 }else{
+									 catArr = oldflysearch;
+								 }
+								 }else{
+									var catArr = [];
+									jQuery(".prod_id input[type='checkbox']").each(function(){									
+									var sThisVal = (this.checked ? 1 : 0);
+										if(sThisVal){ 
+											var p_id = jQuery(this).attr('data-product');							
+											catArr.push( p_id );							
+										}	
+
+									});	
+								 }
+								 jQuery('#flysearchvalues').val(catArr);
+								 if(newIndex ==2){
+									 jQuery('.actions').hide();
+									 return true;
+								 }
+								return true;
+								
+							}
+							
+						}
+				});
+			});
+		});
+</script>
+<link rel="stylesheet" href="<?php echo $skinurl.$package;?>/default/css/jquerysteps.css">
+<div class="pdfflyer">
+	<div class="page-title">
+        <h1><?php echo $this->__('Create PDF Flyers');?></h1>
+    </div>
+	<div class="pdfflyerform-section">
+		<form name="flyerform" id="flyerform" enctype="multipart/form-data">
+		<div id="wizard">
+<!--step 1 Selecting PDF Template Starts -->
+		<h3><?php echo $this->__('SELECT TEMPLATE');?></h3>
+		<section>
+			<h2><?php echo $this->__('Select Template');?></h2>
+			<?php echo $this->__('Select one of the two templates displayed below:');?>
+			<div class="pdfform1">
+				<div class="form1">
+					<img src="<?php echo $skincompleteurl.'catpage.jpg';?>"/>
+					<div>
+					<label name="form1name"><input type="checkbox" name="catpage" id="catpage" value="<?php echo $this->__('teaser');?>" onclick="teaser();"/>
+					<?php echo $this->__('Teaser Page - Good for 4-30 products');?></label>
+					</div>
+				</div>
+				<div class="form2">
+					<img src="<?php echo $skincompleteurl.'viewpage.jpg';?>"/>
+					<div>
+					<label name="form2name"><input type="checkbox" name="viewpage" id="viewpage" value="<?php echo $this->__('detailed');?>" onclick="detailed();"/>
+					<?php echo $this->__('Detailed Page - Good for 1-3 products');?></label>
+					</div>
+				</div>
+				<div class="notice"><?php  echo $this->__('* Above images are just examples & do not represent the product choices you will make');?></div>
+			</div>
+			<script>
+				function teaser(){
+					jQuery('#viewpage').prop('checked', false);
+				}
+				function detailed(){
+					jQuery('#catpage').prop('checked', false);
+				}
+			</script>
+		</section>
+<!--step 1 Selecting PDF Template Ends -->
+<!--step 2 Addition of products to the template flyers Starts -->
+		<h3><?php echo $this->__('ADD PRODUCTS');?></h3>
+		<section>
+			<h2><?php echo $this->__('ADD PRODUCTS');?> </h2>
+			<h4><?php echo $this->__('Below is the summary of the details for the E-flyer:');?></h4>
+			<div class="custom_search_bykey">
+				<div class="cs_section">				
+					<div class="custom_text_search_section">
+						<p><?php echo $this->__('Search by Style');?></p>	
+						<input type="text" name="search" id="keysearchval" placeholder="search"/>
+						<button id="gosearchkey" value="Go" name="Go"><?php echo $this->__('Go');?></button>
+					</div>
+					<div class="custom_or_section">
+						<?php echo $this->__('OR');?>
+					</div>
+					<div class="custom_dist_search_section">
+						<?php 
+							$helper1 = Mage::helper('catalog/category');
+							$categories = $helper1->getStoreCategories();
+							
+						?>
+						<div class="dist_left">
+						<p><?php echo $this->__('Search by Category');?></p>
+						<select id="catselect">
+							<option value=""><?php echo $this->__('-Please Select-');?></option>
+							<?php foreach ($categories as $category){
+								$name = $category->getName();
+								$cid = $category->getId();?>
+							<option value="<?php echo $cid;?>"><?php echo $name;?></option>
+							<?php }?>
+						</select>
+						</div>
+						<div class="dist_left1">
+						<p><?php echo $this->__('Search by Price Range');?></p>
+						<div class="dist_left1set">
+							<div class="dl1"><?php echo $this->__('From  $');?></div>
+							<div class="dl2"><input type="text" name="pricefrom" id="pricefrom"/></div>
+							<div class="dl3"><?php echo $this->__('To $');?></div>
+							<div class="dl4"><input type="text" name="priceto" id="priceto"/></div>
+						</div>
+						</div>
+						<div class="dist_left2">
+							<button id="catsubmit" value="submit" name="catsubmit"><?php echo $this->__('Submit');?></button>
+							<button id="catreset" value="reset" name="catreset"><?php echo $this->__('Reset');?></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="results_section" style="margin-top: 40px;">
+			</div>
+			<div class="research" style="display:none;">
+				<button id="clearsearch" name="clearsearch"><?php echo $this->__('Add to mailer and select more products');?></button>
+			</div>
+			<div class="imag_loader">
+				<div class="ct_loader">
+					<img src="http://caps.online/skin/frontend/sm_market/default/images/loading.gif"/>
+				</div>
+			</div>
+<script>
+jQuery('.imag_loader').hide();
+jQuery('#gosearchkey').click(function(){
+					var query = jQuery('#keysearchval').val();
+					var baseurl = '<?php echo $baseurl;?>';
+					var urls = baseurl+'customer/disttools/createpdfs/';
+					if(query ==""){
+						alert('please enter search term');
+						return false;
+					}else{
+						jQuery('.imag_loader').show();
+						jQuery.ajax({
+							url: baseurl+'customer/disttools/searchsubmits/',
+							type: 'POST',
+							data: {query:query,url:urls},
+							success: function (data) {
+								jQuery('.imag_loader').hide();
+								jQuery('.results_section').html(data);
+								jQuery('.research').css('display','block');
+							}
+						});
+					}
+					return false;
+		}); 
+
+jQuery('#catsubmit').click(function(){
+					var catselect =jQuery('#catselect').val();
+					var pricefrom =jQuery('#pricefrom').val();
+					var priceto =jQuery('#priceto').val();
+					var baseurl = '<?php echo $baseurl;?>';
+					if(catselect ==""){
+						alert('Please Select a category');
+						return false;
+					}else{
+					jQuery('.imag_loader').show();
+					jQuery.ajax({
+							url: baseurl+'customer/disttools/catsubmits/',
+							type: 'POST',
+							data: {catselect:catselect,pricefrom:pricefrom,priceto:priceto},
+							success: function (data) {
+								jQuery('.imag_loader').hide();
+								//alert(data);
+								jQuery('.results_section').html(data);
+								jQuery('.research').css('display','block');
+							}
+						});
+					
+					return false;
+				}
+		}); 
+jQuery('#catreset').click(function(){
+					jQuery('#catselect').val("");
+					jQuery('#pricefrom').val("");
+					jQuery('#priceto').val("");
+					jQuery('#pricefrom').html("");
+					jQuery('#priceto').html("");
+					return false;
+		}); 
+jQuery('#clearsearch').click(function(){
+		var oldflysearch = jQuery('#flysearchvalues').val();
+		if(oldflysearch != ""){
+		var catArr = [];
+		jQuery(".prod_id input[type='checkbox']").each(function(){									
+			var sThisVal = (this.checked ? 1 : 0);
+			if(sThisVal){
+			var p_id = jQuery(this).attr('data-product');							
+			catArr.push( p_id );												
+			}
+		});									 
+			 catArr = catArr +','+ oldflysearch;
+		 }else{
+			var catArr = [];
+			jQuery(".prod_id input[type='checkbox']").each(function(){									
+			var sThisVal = (this.checked ? 1 : 0);
+				if(sThisVal){
+					var p_id = jQuery(this).attr('data-product');							
+					catArr.push( p_id );					
+				}
+
+			});	
+		 }
+		alert('The Selected products have been added to the mailer');
+		jQuery('.research').css('display','none');
+		jQuery('#flysearchvalues').val(catArr);
+		jQuery('.results_section').html("");
+		jQuery('#keysearchval').val("");
+		jQuery('#catselect').val("");
+		jQuery('#pricefrom').val("");
+		jQuery('#priceto').val("");
+		jQuery('#pricefrom').html("");
+		jQuery('#priceto').html("");
+	return false;
+});
+		
+function validateNumber(event) {
+    var key = window.event ? event.keyCode : event.which;
+
+    if (event.keyCode === 8 || event.keyCode === 46
+     || event.keyCode === 37 || event.keyCode === 39) {
+        return true;
+    }
+    else if ( key < 48 || key > 57 ) {
+        return false;
+    }
+    else 
+    {
+		return true;
+	}
+}
+jQuery('#pricefrom').keypress(validateNumber);
+jQuery('#priceto').keypress(validateNumber);
+</script>
+		</section>
+
+<!--step 2 Addition of products to the template flyers Ends -->
+<!--step 3 Review the Flyers and email starts -->
+		<h3><?php echo $this->__('REVIEW FLYER AND EMAIL');?></h3>
+		<section>
+			<h2><?php echo $this->__('REVIEW FLYER AND EMAIL');?> </h2>
+			<?php echo $this->__('Select one of the two templates displayed below:');?>
+			<div class="eflyersection">
+				<div class="section1">
+					<div class="flylabel">
+						<div class="col1">
+							<label for="flyername"><?php echo $this->__('E-Flyer Name :');?></label>
+						</div>
+						<div class="col2">
+							<input type="text" name="flyername" id="flyername" onchange="checkUsername(this)"/>
+						</div>
+					</div>
+					<div class="flyhead">
+					<h2><?php echo $this->__('Header Information');?></h2>
+					</div>
+					<div class="flylogo">
+						<div class="col1">
+							<label for="logo"><?php echo $this->__('Logo :');?></label>
+						</div>
+						<div class="col2">
+							<input type="file" name="logo" id="logo" accept="image/*"/>
+						</div>
+					</div>
+					<div class="flyheadtext">
+						<div class="col1">
+							<label for="headertext"><?php echo $this->__('Text');?></label>
+						</div>
+						<div class="col2">
+							<input type="text" name="headertext" id="headertext"/>
+						</div>
+					</div>
+					<div class="flyspan">
+					<span class="or"><?php echo $this->__('OR');?></span>
+					</div>
+					<div class="flyheadimg">
+						<div class="col1">
+							<label for="headtextimage"><?php echo $this->__('Upload Custom Image ');?></label>
+						</div>
+						<div class="col2">
+							<input type="file" name="logocustom" id="logocustom" accept="image/*"/>
+						</div>
+					</div>
+					<div class="flyhead">
+					<h2><?php echo $this->__('Footer Information');?></h2>
+					</div>
+					<div class="flyfoot">
+						<div class="col1">
+							<label for="footertext"><?php echo $this->__('Text');?></label>
+						</div>
+						<div class="col2">
+							<textarea name="footertext" id="footertext" rows="5" cols="50"></textarea>
+						</div>
+					</div>
+					<div class="buttons">
+						<div class="button_sub">
+							<button type="reset" name="rev_reset" id="rev_reset" value="Reset"><?php echo $this->__('Reset');?></button>
+							<button type="submit" name="rev_preview" id="rev_preview" value="Preview"><?php echo $this->__('Preview');?></button>
+							<button type="submit" name="rev_save" id="rev_save" value="Save & email"><?php echo $this->__('Save & email');?></button>	
+						</div>				
+					</div>
+				</div>
+				<div class="section2">
+					<img src="http://caps.online/skin/frontend/sm_market/default/images/flyer.png" alt="flyer"/>
+				</div>
+			</div>
+			<div class="imag_loader1">
+				<div class="ct_loader">
+					<img src="http://caps.online/skin/frontend/sm_market/default/images/loading.gif"/>
+				</div>
+			</div>
+<script>
+	jQuery('.imag_loader1').css('display', 'none');
+	jQuery('.close_rdiv').css('display','none');
+	jQuery('.mail_form').css('display','none');
+	function checkUsername(){ 
+		var flyername= jQuery('#flyername').val();
+		var baseurl = '<?php echo $baseurl;?>';
+		jQuery.ajax({  
+			url: baseurl+'customer/disttools/namecheck/',
+			type: 'POST',
+			data: {flyername: flyername},   
+			success: function(data){  				
+				if(data!='not exist'){
+					alert(data);
+					return false;
+				}else{
+					return true;
+				}
+			}
+		});  
+	}
+	jQuery('#rev_preview').click(function(){
+		var flyname = jQuery('#flyername').val();
+		var headtext = jQuery('#headertext').val();
+		var logo = jQuery('#logo').val();
+		var logocustom = jQuery('#logocustom').val();			
+		var foottext = jQuery('#footertext').val();
+		var flytemplate = jQuery('#flytemplate').val();
+		var flysearchvalues = jQuery('#flysearchvalues').val();
+		var baseurl = '<?php echo $baseurl;?>';
+		var formData = new FormData(jQuery('#flyerform')[0]);
+		if(flyname == ""){
+			alert('please enter flyer name');
+			return false;
+		}else if(logo ==""){
+			alert('Please Upload the logo');
+			return false;
+		}else if((headtext =="")&&(logocustom == "")){
+			alert('please upload a image or input a text');
+			return false;					
+		}else if(foottext ==""){
+			alert('please enter the footer text'); 
+			return false;
+		}else{
+			jQuery('.imag_loader1').css('display', 'block');							
+			jQuery.ajax({
+							url: baseurl+'customer/disttools/flyreviews/',
+							type: "POST",						
+							data: formData,
+							async: false,            
+							success: function (data) {
+								jQuery('.imag_loader1').css('display', 'none');	
+								//alert(data);
+								jQuery('.close_rdiv').css('display','block');
+								jQuery('.prev_new').html(data);	
+								jQuery('.preview_set').css('display','block');						
+							},
+							cache: false,
+							contentType: false,
+							processData: false
+		});
+		return false;
+		}		
+	});
+	jQuery('.close_rdiv').on( "click", function() {
+		//alert('hi');
+		jQuery('.preview_set').css('display','none');
+		jQuery('.prev_new').html("");
+		return false;
+	});
+	jQuery('#rev_reset').click(function(){
+		//alert('hi');
+		jQuery('#flyername').val("");
+		jQuery('#headertext').val("");
+		jQuery('#logo').val("");
+		jQuery('#logocustom').val("");			
+		jQuery('#footertext').val("");
+		return false;
+	});
+	jQuery('#rev_save').click(function(){
+		var flyname = jQuery('#flyername').val();
+		var headtext = jQuery('#headertext').val();
+		var logo = jQuery('#logo').val();
+		var logocustom = jQuery('#logocustom').val();			
+		var foottext = jQuery('#footertext').val();
+		var flytemplate = jQuery('#flytemplate').val();
+		var flysearchvalues = jQuery('#flysearchvalues').val();
+		var baseurl = '<?php echo $baseurl;?>';
+		var formData = new FormData(jQuery('#flyerform')[0]);
+		if(flyname == ""){
+			alert('please enter flyer name');
+			return false;
+		}else if(logo ==""){
+			alert('Please enter header text');
+			return false;
+		}else if((headtext =="")&&(logocustom == "")){
+			alert('please upload a image or input a text');
+			return false;
+		}else if(foottext ==""){
+			alert('please enter the footer text');
+			return false;
+		}else{
+			jQuery.ajax({
+							url: baseurl+'customer/disttools/flysubmits/',
+							type: 'POST',
+							data: formData,
+							async: false,            
+							success: function (data) {
+								alert(data); 
+								window.location.href = "http://caps.online/customer/disttools/pdfmailsends/";								
+							},
+							cache: false,
+							contentType: false,
+							processData: false
+		});
+		return false;
+		}
+		
+	});
+</script>			
+		</section>
+<!--step 3 Review the Flyers and email starts -->
+		</div>
+		<input type="hidden" name="flytemplate" id="flytemplate" value="">
+		<input type="hidden" name="flysearchvalues" id="flysearchvalues" value="">
+		</form>
+	</div>
+</div>
+
+<div class="preview_set">
+	<div class="close_rdiv">X</div>
+	<div class="prev_new">
+	</div>
+</div>

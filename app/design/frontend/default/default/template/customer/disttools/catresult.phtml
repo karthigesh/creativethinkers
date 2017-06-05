@@ -1,0 +1,49 @@
+<?php 
+$var_value = Mage::registry('catresultids');
+//print_r($var_value);
+
+if(!empty($var_value)){
+echo '<div class="products-grid">
+	<div class="row">
+	<div class="yt-products-container clearfix">';
+
+$_collectionSize = count($var_value);
+foreach($var_value as $prod_id){
+	$obj = Mage::getModel('catalog/product');
+	$_product = $obj->load($prod_id);
+	$_helper = $this->helper('catalog/output');
+
+echo '<div class="item col-lg-3 col-md-3 col-sm-6 col-xs-12"> 
+		<div class="item-inner">
+			<div class="product-image">
+							<a href="'.$_product->getProductUrl().'" title="'.$this->stripTags($this->getImageLabel($_product, 'small_image'), null, true).'" class="product-image">
+								<img id="product-collection-image-'.$_product->getId().'"
+								src="'.$this->helper('catalog/image')->init($_product, 'small_image')->resize(300,300).'"
+								alt="'.$this->stripTags($this->getImageLabel($_product, 'small_image'), null, true).'" />
+							</a>
+			</div>
+			<div class="product-info">
+							<div class="product-name">
+								<a href="'.$_product->getProductUrl() .'" title="'.$this->stripTags($_product->getName(), null, true).'">';
+								if( strlen($_helper->productAttribute($_product, $_product->getName(), 'name')) > 100 ){
+									 echo substr($_helper->productAttribute($_product, $_product->getName(), 'name'), 0, 100);
+                                } else {
+                                    echo $_helper->productAttribute($_product, $_product->getName(), 'name');
+                                }
+								echo '</a>
+							</div>
+							<div class="prod_sku"><span>'.$this->__('Style:').'</span>'. $_product->getSKU().'</div>
+							<div class="wishlist-compare prod_id">
+								'.$this->getPriceHtml($_product, true).'
+								<label><input type="checkbox" data-product="'.$prod_id.'" />'.$this->__('Add to Mailer').'</label>
+                            </div>
+			</div>
+		</div>
+	</div>';
+}
+echo '</div></div></div>';
+}else{
+	echo $this->__('Sorry, No products matching the selection.Please try again with the name of the product.');
+}
+?>
+

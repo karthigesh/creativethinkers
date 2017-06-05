@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Stallioni_Distributoradmin>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Stallioni_Distributoradmin>
+    </modules>
+</config>

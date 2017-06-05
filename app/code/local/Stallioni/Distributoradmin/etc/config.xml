@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <Stallioni_Distributoradmin>
+            <version>0.1.0</version>
+        </Stallioni_Distributoradmin>
+    </modules>
+        
+        
+<global>
+        <helpers>
+            <Distributoradmin>
+                <class>Stallioni_Distributoradmin_Helper</class>
+            </Distributoradmin>  
+        </helpers>
+</global>    
+        <admin>
+        <routers>
+            <distributoradmin>
+                <use>admin</use>
+                <args>
+                    <module>Stallioni_Distributoradmin</module>
+                    <frontName>distributoradmin</frontName>
+                </args>
+            </distributoradmin>
+        </routers>
+    </admin>    
+    
+    <adminhtml>
+        <menu>
+            <menu1 translate="title" module="Distributoradmin">
+                <title>Distributor Admin</title>
+                <sort_order>60</sort_order>
+                <children>
+                    <menuitem1 module="Distributoradmin">
+                        <title>Distributor websites</title>
+                        <sort_order>1</sort_order>
+                        <action>distributoradmin/index</action>
+                    </menuitem1>
+                    <menuitem2 module="Distributoradmin">
+                        <title>Distributor About us</title>
+                        <sort_order>2</sort_order>
+                        <action>distributoradmin/index/about</action>
+                    </menuitem2>
+                    <menuitem3 module="Distributoradmin">
+                        <title>Distributor Complimentory Order</title>
+                        <sort_order>3</sort_order>
+                        <action>distributoradmin/index/complimentary</action>
+                    </menuitem3>
+                    <menuitem4 module="Distributoradmin">
+                        <title>Distributor Products</title>
+                        <sort_order>4</sort_order>
+                        <action>distributoradmin/index/vendorproducts</action>
+                    </menuitem4>
+                </children>                
+            </menu1>
+        </menu>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <menu1 translate="title" module="Distributoradmin">
+							<title>Distributor Admin</title>
+                			<sort_order>60</sort_order>
+                            <children>
+                                <menuitem1>
+                                    <title>Distributor websites</title>
+                                    <sort_order>1</sort_order>
+                                </menuitem1>
+                                <menuitem2>
+                                    <title>Distributor About us</title>
+                                    <sort_order>2</sort_order>
+                                </menuitem2>
+                                <menuitem3>
+                                    <title>Distributor Complimentory Order</title>
+                                    <sort_order>3</sort_order>
+                                </menuitem3>
+                                <menuitem4>
+                                    <title>Distributor Products</title>
+                                    <sort_order>4</sort_order>
+                                </menuitem4>
+                            </children>
+                       </menu1>
+                   </children>
+               </admin>
+           </resources>
+        </acl>
+    </adminhtml>    
+    
+</config>

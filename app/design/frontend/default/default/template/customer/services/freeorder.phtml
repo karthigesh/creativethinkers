@@ -1,0 +1,227 @@
+<?php 
+/***********
+ * for the display of the free Order sample kit
+ * 
+ * 
+ */
+ 
+?>
+<div class="orderfree-dashboard">
+	<div class="page-title">
+        <h1><?php echo $this->__('Order Complimentory Sample Pack');?></h1>
+    </div> 
+<?php
+ echo $this->getLayout()->createBlock('cms/block')->setBlockId('order_comple_sample')->toHtml(); 
+ $customer = Mage::helper('customer')->getCustomer()->getData();
+ $customerAddressId = Mage::getSingleton('customer/session')->getCustomer()->getDefaultBilling();
+ $address = Mage::getModel('customer/address')->load($customerAddressId);
+ $address_data = $address->getData();
+ $customer_id = $customer['entity_id'];
+ $customer_fname = $customer['firstname'];
+ $customer_lname = $customer['lastname'];
+ $customer_email = $customer['email'];
+ $customer_company = $address_data['company'];
+ $customer_telephone = $address_data['telephone'];
+ $customer_street = $address_data['street'];
+ $customer_city = $address_data['city'];
+ $customer_state = $address_data['region'];
+ $customer_zipcode = $address_data['postcode'];
+ $customer_country = $address_data['country_id'];
+ $baseurl = Mage::getBaseUrl();
+?>
+<div class="complimentary">
+<div id="success"></div>
+<form id="compliment_form" method="POST" type="enctype/formdata">
+	<div class="message"><?php echo $this->__('Fields marked with');?><span class="required">*</span><?php echo $this->__(' are mandatory');?></div>
+	<div class="col-xs-12">
+			<h2><?php echo $this->__('Shipping Information');?></h2>
+			<div class="sets">
+				<div class="sethead"><?php echo $this->__('Name');?><span class="required">*</span></div>
+				<div class="setbody">
+					<div class="fnset">
+						<span class="nameicon"></span>
+						<input type="text" name="fname" id="fname" value="<?php echo $customer_fname;?>" required/>
+					</div>
+					<div class="lnset">
+						<span class="nameicon"></span>
+						<input type="text" name="lname" id="lname" value="<?php echo $customer_lname;?>" required/>
+					</div>					
+				</div>
+			</div>
+			<div class="sets">
+				<div class="sethead"><?php echo $this->__('Company Name');?><span class="required">*</span></div>
+				<div class="setbody">
+					<div class="cnset">
+						<span class="companyIcon"></span>
+						<input type="text" name="companyname" id="companyname" value="<?php echo $customer_company;?>" required/>
+					</div>
+				</div>
+			</div>
+			<div class="sets">
+				<div class="sethead"><?php echo $this->__('Email Address');?><span class="required">*</span></div>
+				<div class="setbody">
+					<div class="emset">
+						<span class="emailIcon"> </span>
+						<input type="email" name="email" id="email" value="<?php echo $customer_email;?>" required/>
+					</div>
+				</div>
+			</div>
+			<div class="sets">
+				<div class="sethead"><?php echo $this->__('Phone Number');?><span class="required">*</span></div>
+				<div class="setbody">
+					<div class="phset">
+						<span class="phoneIcon"></span>
+						<input type="text" name="phone" id="phone" value="<?php echo $customer_telephone;?>" required/>
+					</div>
+				</div>
+			</div>
+			<div class="sets">
+				<div class="sethead"><?php echo $this->__('Address');?><span class="required">*</span></div>
+				<div class="setbody">
+					<div class="adset">
+						<span class="addresIcon">  </span>
+						<input type="text" name="street" id="street" value="<?php echo $customer_street;?>" required/>
+					</div>
+					<div class="ctset">
+						<span class="cityIcon"></span>
+						<input type="text" name="city" id="city" value="<?php echo $customer_city;?>" required/>
+					</div>
+					<div class="stset">
+						<span class="cityIcon"></span>
+						<input type="text" name="state" id="state" value="<?php echo $customer_state;?>" required/>
+					</div>
+					<div class="zipset">
+						<span class="zipIcon"></span>
+						<input type="text" name="zipcode" id="zipcode" value="<?php echo $customer_zipcode;?>" required/>
+					</div>
+					<div class="cyset">
+					<?php $_countries = Mage::getResourceModel('directory/country_collection')->loadData()->toOptionArray(false) ?>  
+					<?php if (count($_countries) > 0): ?>  
+					<select name="country" id="country"  required>  
+					<option value="">– Please Select –</option>  
+					<?php foreach($_countries as $_country): ?>  
+					<option value="<?php echo $_country['value'] ?>" <?php if($_country['value']==$customer_country){echo 'selected';}?>><?php echo $_country['label'] ?></option>  
+					<?php endforeach; ?>  
+					</select>  
+					<?php endif; ?>
+					</div>
+				</div><!--setbody-->
+			</div><!--sets-->
+	</div>
+	<div class="col-xs-12">
+		<h2><?php echo $this->__('Shipping Account Information');?></h2>
+			<div class="setship">
+				<div class="sethead"><?php echo $this->__('Shipping Company');?><span class="required">*</span></div>
+				<div class="setbody">
+					<select name="shipcompany" id="shipcompany" required>
+						<option value="">– Please Select –</option>
+						<option value="ups">UPS</option>
+						<option value="fedex">FEDEX</option>
+					</select>
+				</div>
+			</div>
+			<div class="setship">
+				<div class="sethead"><?php echo $this->__('Shipping Account:');?></div>
+				<div class="setbody">
+					<div class="shipset">
+						<span class="shpiingIcon"></span>
+						<input type="text" name="shipaccount" id="shipaccount" value=""/>
+					</div>					
+				</div>
+			</div>
+		<div class="col-md-6">
+			<input type="submit" value="Submit" class="button"/>
+		</div>
+		<div class="col-md-6">
+			<input type="reset" value="reset"/>
+		</div>
+	</div>
+</form>
+			<div class="imag_loader">
+				<div class="ct_loader">
+					<img src="http://caps.online/skin/frontend/sm_market/default/images/loading.gif"/>
+				</div>
+			</div>
+</div>
+</div>
+
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+	jQuery('.imag_loader').hide();
+	jQuery('.button').click(function(){
+		var fname = jQuery('#fname').val();
+		var lname = jQuery('#lname').val();
+		var companyname = jQuery('#companyname').val();
+		var email = jQuery('#email').val();
+		var phone = jQuery('#phone').val();
+		var street = jQuery('#street').val();
+		var state = jQuery('#state').val();
+		var city = jQuery('#city').val();
+		var country = jQuery('#country').val();
+		var zipcode = jQuery('#zipcode').val();		
+		var shipcompany = jQuery('#shipcompany').val();
+		var shipaccount = jQuery('#shipaccount').val();
+		var shipmethod = jQuery('#shipmethod').val();
+		var baseurl = '<?php echo $baseurl;?>';
+		var formData = new FormData(jQuery('#compliment_form')[0]);
+		if(fname == ""){
+			alert('Please enter the firstname');
+			return false;
+		}else if(lname == ""){
+			alert('Please enter the lastname');
+			return false;
+		}else if(companyname == ""){
+			alert('Please enter the companyname');
+			return false;
+		}else if(email == ""){
+			alert('Please enter the email');
+			return false;
+		}else if(phone == ""){
+			alert('Please enter the phone');
+			return false;
+		}else if(street == ""){
+			alert('Please enter the street');
+			return false;
+		}else if(state == ""){
+			alert('Please enter the state');
+			return false;
+		}else if(city == ""){
+			alert('Please enter the city');
+			return false;
+		}else if(country == ""){
+			alert('Please select the country');
+			return false;
+		}else if(zipcode == ""){
+			alert('Please enter the zipcode');
+			return false;
+		}else if(shipcompany == ""){
+			alert('Please select the ship company');
+			return false;
+		}else if(shipaccount == ""){
+			alert('Please select the shipping Account number');
+			return false;
+		}else{	
+			jQuery('.imag_loader').show();	
+		jQuery.ajax({
+							url: baseurl+'customer/services/freeordersaves/',
+							type: 'POST',
+							data: formData,
+							async: true,            
+							success: function (data) {
+								jQuery('.imag_loader').hide();
+								html = '<div class="msgsuccess">Thank you for the request of Free Sample Kit.</div>';
+									jQuery('#success').append(html);
+									setTimeout(function() {
+									jQuery('.msgsuccess').remove();
+									}, 3500);
+								location.reload();			
+							},
+							cache: false,
+							contentType: false,
+							processData: false
+			});
+		return false;
+	}
+	});
+});
+</script>

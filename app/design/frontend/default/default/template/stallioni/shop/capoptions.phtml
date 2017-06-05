@@ -1,0 +1,195 @@
+<?php
+$var_value = Mage::registry('vendordetails');
+$pagevalue = Mage::registry('pagedetails');
+$vendor_id = $var_value['vendor_id'];
+$vendorname = $var_value['vendorname'];
+$vendortitle = str_replace('-', ' ', $vendorname);
+$vendorlogo = $var_value['vendorlogo'];
+$vendorphone = $var_value['vendorphone'];
+$description = $var_value['description'];
+$address = $var_value['address'];
+$vendor_url = $var_value['vendor_url'];
+$customer = Mage::getModel('customer/customer')->load($vendor_id)->getData();
+$customer_address_id = $customer['default_billing'];
+$defaultBillingAddress = Mage::getModel('customer/address')->load($customer_address_id);
+$customer_email = $customer['email'];
+$company = $defaultBillingAddress['company'];
+$conn = Mage::getSingleton('core/resource')->getConnection('core_read');
+$baseurl = Mage::getBaseUrl();
+$pagename = 'distributor-'.$pagevalue['shopset']['pagename'];
+$capoptionurl = $baseurl.'shop/'.$vendorname.'/';
+?>
+<title><?php echo $pagevalue['shopset']['pagename'];?></title>
+<?php
+Mage::register('vendorname', $vendorname);
+$block = $this->getLayout()->createBlock('core/template');
+$block->setTemplate('stallioni/shop/header.phtml');
+echo $block->toHtml(); 
+?>
+<body id="bd" class="sm_market vendorshop <?php echo $vendorname;?> shop-about">
+<div id="yt_wrapper">
+	<div id="yt_header" class="yt-header wrap header1-wrap">		     
+		<div class="yt-header-middle">
+			<div class="container">
+				<div class="row">
+					<div class="logo col-lg-2 col-md-2 col-sm-12 col-xs-12">
+						<div class="logo1">
+							<a href="<?php echo $baseurl.'shop'.DS.$vendorname.DS;?>" title="<?php echo $vendortitle;?>" class="logo"><img src="<?php echo $vendorlogo;?>" alt="thecapcompany"></a>
+						</div>
+					</div>
+					<div class="header-middle-right col-lg-10 col-md-10 col-sm-12 col-xs-12">
+						<div class="topmenuset">
+							<div class="sm_megamenu_wrapper_horizontal_menu sambar">
+								<div class="sambar-inner">
+										<a class="btn-sambar" data-sapi="collapse" id="custommobileset">
+											<span class="icon-bar"></span>
+											<span class="icon-bar"></span>
+											<span class="icon-bar"></span>
+										</a>
+										<ul class="sm-megamenu-hover sm_megamenu_menu sm_megamenu_menu_black" id="custom_menusambar" data-jsapi="on">
+											<li class=" other-toggle sm_megamenu_lv1 sm_megamenu_drop parent   ">
+												<a class="sm_megamenu_head sm_megamenu_drop " href="<?php echo $baseurl.'shop'.DS.$vendorname.DS;?>" id="sm_megamenu_165">
+													<span class="sm_megamenu_title">Home</span>
+												</a>
+											</li>
+											<li class=" other-toggle sm_megamenu_lv1 sm_megamenu_drop parent   ">
+												<a class="sm_megamenu_head sm_megamenu_drop " href="<?php echo $baseurl.'shop'.DS.$vendorname.DS.'about'.DS?>" id="sm_megamenu_162">
+													<span class="sm_megamenu_title">About Us</span>
+												</a>
+											</li>
+											<li class=" other-toggle sm_megamenu_lv1 sm_megamenu_drop parent   ">
+												<a class="sm_megamenu_head sm_megamenu_drop " href="<?php echo $baseurl.'shop'.DS.$vendorname.DS.'howtoorder'.DS?>" id="sm_megamenu_167">
+													<span class="sm_megamenu_title">How To Order</span>								                                
+												</a>
+											</li>
+											<li class=" other-toggle sm_megamenu_lv1 sm_megamenu_drop parent   ">
+												<a class="sm_megamenu_head sm_megamenu_drop " href="<?php echo $baseurl.'shop'.DS.$vendorname.DS.'contact'.DS?>" id="sm_megamenu_169">
+													<span class="sm_megamenu_title">Contact</span>
+												</a>
+											</li>
+										</ul>
+								</div><!--sambar-inner-->
+							</div><!--sm mega menu wrapper-->
+						</div><!--topmenuset-->
+						<div class="head-searchbox">
+							<div class="top-right-search">
+								<div class="topphone" style="float: right;">
+									<div><span><?php echo '<strong>Contact:&nbsp</strong>'.$vendorphone;?></span><span><?php echo '&nbsp<strong>Email:&nbsp</strong>'.$customer_email;?></span></div>
+								</div>
+								<form id="search_mini_form" action="<?php echo $baseurl;?>catalogsearch/result/" method="get">
+								<div class="form-search simple-search">
+								<span class="search-icon">
+								</span>
+								<input id="search" type="text" name="q" value="" class="input-text" autocomplete="off">
+								<div id="search_autocomplete" class="search-autocomplete" style="display: none;"></div>
+								<button type="submit" title="Search" class="button">Search
+								<script type="text/javascript">
+								//<![CDATA[
+								var searchForm = new Varien.searchForm('search_mini_form', 'search', 'Search...');
+								searchForm.initAutocomplete('<?php echo $baseurl;?>catalogsearch/ajax/suggest/', 'search_autocomplete');
+								//]]>
+								</script>
+								</button></div>
+								</form>
+							</div>
+						</div>
+					</div><!-- header middle right-->
+				</div><!--row-->
+			</div><!--container-->
+		</div><!-- header middle-->
+		<div class="yt-header-bottom">
+			<div class="container">
+				<div class="row">
+					<div id="yt_header_left" class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+						<div id="yt_menu_short">
+							<div id="btn_categories">
+								<span><i class="icon-cate"></i>Cap Categories</span>
+							</div>
+							<div class="yt-menu-content">
+									<?php $block1 = $this->getLayout()->createBlock('core/template');
+										$block1->setTemplate('stallioni/shop/topmenu.phtml');
+										echo $block1->toHtml(); 
+									 ?>
+							</div>
+						</div><!--yt menu short-->
+					</div><!--yt header left-->
+				</div><!--row-->
+			</div><!--container-->
+		</div><!--yt header bottom-->
+	</div><!--yt_header-->
+	<div id="yt_content" class="yt-content wrap">
+		<div id="yt_main" class="yt-main col-main">
+			<div class="yt-main-inner yt-content-inner">
+				<div class="container">
+					<div class="row">
+						<div id="yt_pathway" class="clearfix">
+							<div class="pathway-inner">
+								<ul class="breadcrumbs">
+									<div class="breadcrumbs-content">
+										<li class="home" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+										<a itemprop="url" href="<?php echo $baseurl.'shop'.DS.$vendorname.DS;?>" title="Go to Home Page" class="has-link">
+										<span itemprop="title">Home</span>
+										</a>
+										</li>
+										<li class="cms_page last" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><?php echo $pagevalue['shopset']['pagename'];?></li>
+									</div>
+								</ul>
+							</div>
+						</div><!--yt_pathway-->
+						<div class="columns-w">
+							<div id="yt_main" class="yt-main-left yt-main col-main col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="col-md-12 page-title title-c">
+									<h1><?php echo $pagevalue['shopset']['pagename'];?></h1>
+								</div>
+<div class="std"><div class="cop_section">
+<div class="cop_item">
+<a href="<?php echo $capoptionurl;?>fabricscolors/" target="_blank"><img src="<?php echo $baseurl;?>media/wysiwyg/customizations/cust0.jpg" alt="fabrics colors" title="fabrics colors"><div>fabrics colors</div></a>
+</div>
+<div class="cop_item">
+<a href="<?php echo $capoptionurl;?>puff/" target="_blank"><img src="<?php echo $baseurl;?>media/wysiwyg/customizations/cust1.jpg" alt="puff embroidery" title="puff embroidery"><div>puff embroidery</div></a>
+</div>
+<div class="cop_item">
+<a href="<?php echo $capoptionurl;?>structure/" target="_blank"><img src="<?php echo $baseurl;?>media/wysiwyg/customizations/cust2.jpg" alt="structure profile" title="structure profile"><div>structure profile</div></a>
+</div>
+<div class="cop_item">
+<a href="<?php echo $capoptionurl;?>location/" target="_blank"><img src="<?php echo $baseurl;?>media/wysiwyg/customizations/cust3.jpg" alt="locations" title="locations"><div>locations</div></a>
+</div>
+<div class="cop_item">
+<a href="<?php echo $capoptionurl;?>fasteners/" target="_blank"><img src="<?php echo $baseurl;?>media/wysiwyg/customizations/cust4.jpg" alt="fasteners" title="fasteners"><div>fasteners</div></a>
+</div>
+<div class="cop_item">
+<a href="<?php echo $capoptionurl;?>trimpizzaz/" target="_blank"><img src="<?php echo $baseurl;?>media/wysiwyg/customizations/cust5.jpg" alt="trim pizzaz" title="trim pizzaz"><div>trim pizzaz</div></a>
+</div>
+<div class="cop_item">
+<a href="<?php echo $capoptionurl;?>flatembroidery/" target="_blank"><img src="<?php echo $baseurl;?>media/wysiwyg/customizations/cust6.jpg" alt="flat embroidery" title="flat embroidery"><div>flat embroidery</div></a>
+</div>
+<div class="cop_item">
+<a href="<?php echo $capoptionurl;?>screenprinting/" target="_blank"><img src="<?php echo $baseurl;?>media/wysiwyg/customizations/cust7.jpg" alt="screen printing" title="screen printing"><div>screen printing</div></a>
+</div>
+<div class="cop_item">
+<a href="<?php echo $capoptionurl;?>sublimation/" target="_blank"><img src="<?php echo $baseurl;?>media/wysiwyg/customizations/cust8.jpg" alt="sublimation" title="sublimation"><div>sublimation</div></a>
+</div>
+<div class="cop_item">
+<a href="<?php echo $capoptionurl;?>label/" target="_blank"><img src="<?php echo $baseurl;?>media/wysiwyg/customizations/cust9.jpg" alt="label" title="label"><div>label</div></a>
+</div>
+<div class="cop_item">
+<a href="<?php echo $capoptionurl;?>appliques/" target="_blank"><img src="<?php echo $baseurl;?>media/wysiwyg/customizations/cust10.jpg" alt="appliques" title="appliques"><div>appliques</div></a>
+</div>
+<div class="cop_item">
+<a href="<?php echo $capoptionurl;?>distressing/" target="_blank"><img src="<?php echo $baseurl;?>media/wysiwyg/customizations/cust11.jpg" alt="distressing" title="distressing"><div>distressing</div></a>
+</div>
+</div></div>
+
+							</div><!--yt main-->
+						</div><!--columns w-->
+					</div><!--row-->
+				</div><!--container-->
+			</div><!--yt main inner-->
+		</div><!-- yt main-->
+	</div><!--yt_content-->
+<?php
+$block->setTemplate('stallioni/shop/footer.phtml');
+echo $block->toHtml(); 
+?>
+</div><!--yt_wrapper-->
+</body>

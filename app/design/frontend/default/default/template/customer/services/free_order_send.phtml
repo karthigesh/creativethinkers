@@ -1,0 +1,51 @@
+<?php
+$freeordersend = Mage::registry('freeordersend');
+$coreResource = Mage::getSingleton('core/resource');	
+$conn = $coreResource->getConnection('core_read');
+$query = 'SELECT * FROM core_email_template WHERE template_id = 6';
+$selectquery = $conn->fetchRow($query);
+$admin_email = $freeordersend['adminemail'];
+$name = $freeordersend['name'];
+$cname = $freeordersend['cname'];
+$cemail = $freeordersend['cemail'];
+$cphone = $freeordersend['cphone'];
+$cstreet = $freeordersend['cstreet'];
+$ccity = $freeordersend['ccity'];
+$cstate = $freeordersend['cstate'];
+$czipcode = $freeordersend['czipcode'];
+$ccountry = $freeordersend['ccountry'];
+$country = Mage::app()->getLocale()->getCountryTranslation($ccountry);
+$cshipcompany = $freeordersend['cshipcompany'];
+$cshipaccount = $freeordersend['cshipaccount'];
+$to = $admin_email;
+$subject = 'Request for Free Complimentary Sample Kit';
+$message = '<table><tr><td>A Free Complimentary Sample Kit has been requested by the distributor: '.$name.'. His details are listed below:</td></tr></table>';
+$message .= '<table>';
+$message .= '<tr><td>Name:</td><td>'.$name.'</td></tr>';
+$message .= '<tr><td>Company Name:</td><td>'.$cname.'</td></tr>';
+$message .= '<tr><td>Email Address:</td><td>'.$cemail.'</td></tr>';
+$message .= '<tr><td>Contact Number:</td><td>'.$cphone.'</td></tr>';
+$message .= '<tr><td>Address:</td><td>'.$cstreet.'<br>'.$ccity.'<br>'.$cstate.'<br>'.$country.'<br>'.$czipcode.'</td></tr>';
+$message .= '<tr><td>Shipping Company:</td><td>'.$cshipcompany.'</td></tr>';
+$message .= '<tr><td>Shipping Account Number:</td><td>'.$cshipaccount.'</td></tr>';
+$message .= '</table>';
+$headers  = 'MIME-Version: 1.0' . "\r\n";
+$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+$headers .= 'From:'. $cemail . "\r\n" .
+    'Reply-To:'. $cemail .  "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
+$headers1  = 'MIME-Version: 1.0' . "\r\n";
+$headers1 .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+$headers1 .= 'From:'. $admin_email . "\r\n" .
+    'Reply-To:'. $admin_email .  "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
+$to1 = $cemail;
+$subject1= $selectquery['template_subject'];
+$message1 = $selectquery['template_text'];
+$mail=mail($to, $subject, $message, $headers);
+$mail1=mail($to1, $subject1, $message1, $headers1);
+if($mail){
+	echo 'Completed';
+}else{
+  echo 'No Email Sent'; 
+}

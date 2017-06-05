@@ -1,0 +1,17 @@
+<?php
+$_product = Mage::registry('fabricselect');
+$fabric_select = $_product->getAttributeText('fabric_select');
+if (is_string($fabric_select)) {
+		$fabric_select = array($fabric_select);
+}
+foreach($fabric_select as $fabric){
+	$fabric = preg_replace('/\s*/', '', $fabric);
+	$fabric = strtolower($fabric);
+	if ( $this->getLayout()->createBlock('cms/block')->setBlockId($fabric)->toHtml() !== '' ) {
+	echo '<div class="fabric_twill_colors">';
+	echo '<div class="fabric_head">'.$fabric.' Fabric Colors: </div>';
+	echo '<div class="fabric_bodyset">';
+	echo $this->getLayout()->createBlock('cms/block')->setBlockId($fabric)->toHtml();
+	echo '</div></div>';
+	}
+}

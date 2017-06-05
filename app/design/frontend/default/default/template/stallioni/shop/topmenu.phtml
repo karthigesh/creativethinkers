@@ -1,0 +1,95 @@
+<?php 
+$baseurl = Mage::getBaseUrl();
+$vendorname = Mage::registry('vendorname');
+?>
+<div class="sm_megamenu_wrapper_vertical_menu sambar" id="sm_megamenu_menu577e280c7fccd" data-sam="9578822181467885580">
+	<div class="sambar-inner">
+		<a class="btn-sambar" data-sapi="collapse" href="#sm_megamenu_menu577e280c7fccd">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</a>	
+<?php
+$_helper = Mage::helper('catalog/category');
+$_categories = $_helper->getStoreCategories();
+if (count($_categories) > 0){
+?>
+<ul class="sm-megamenu-hover sm_megamenu_menu sm_megamenu_menu_black">
+<?php
+    foreach($_categories as $_category){
+        $_category = Mage::getModel('catalog/category')->load($_category->getId());
+        $_subcategories = $_category->getChildrenCategories();
+        if (count($_subcategories) > 0):?>
+		<li class="megamenu2-parent other-toggle sm_megamenu_lv1 sm_megamenu_drop parent">
+			<a class="sm_megamenu_head sm_megamenu_drop " href="<?php echo $baseurl;?>shop/<?php echo $vendorname;?>/catid/<?php echo $_category->getId();?>/" id="sm_megamenu_<?php echo $_category->getId();?>">
+				<span class="sm_megamenu_icon sm_megamenu_nodesc">		
+					<span class="sm_megamenu_title"><?php echo $_category->getName();?></span>
+				</span>
+			</a>
+			<div class="sm-megamenu-child sm_megamenu_dropdown_2columns ">	
+				<div class="sm_megamenu_col_2 sm_megamenu_firstcolumn  sm_megamenu_id<?php echo $_category->getId();?> megamenu2">
+					<div class="sm_megamenu_col_6 sm_megamenu_firstcolumn  sm_megamenu_id<?php echo $_category->getId();?> ">
+						<div class="sm_megamenu_head_item ">	</div>
+						<div class="sm_megamenu_content">
+							<div class="mega1-cont">
+								<div class="mega1-col mega1-col1">
+									<span class="mega-title"><?php echo $_category->getName();?></span>
+									<ul>
+										<?php foreach($_subcategories as $_subcategory){ ?>
+										<li><a href="<?php echo $baseurl;?>shop/<?php echo $vendorname;?>/catid/<?php echo $_subcategory->getId();?>/"><?php echo $_subcategory->getName();?></a></li>
+										<?php } ?>
+									</ul>        
+								</div>
+								<?php if($_category->getId()=='4'){?>
+									<div class="mega1-col mega1-col2">
+										<a href="#"><img src="<?php echo $baseurl;?>media/wysiwyg/18.jpg" alt="<?php echo $_category->getName();?>" style="width:100%"></a>
+									</div>
+								<?php }else if($_category->getId()=='46'){?>
+									<div class="mega1-col mega1-col2">
+										<a href="#"><img src="<?php echo $baseurl;?>media/wysiwyg/24.jpg" alt="<?php echo $_category->getName();?>" style="width:100%"></a>
+									</div>
+								<?php }else if($_category->getId()=='45'){?>
+									<div class="mega1-col mega1-col2">
+										<a href="#"><img src="<?php echo $baseurl;?>media/wysiwyg/40.jpg" alt="<?php echo $_category->getName();?>" style="width:100%"></a>
+									</div>
+								<?php }else if($_category->getId()=='52'){?>
+									<div class="mega1-col mega1-col2">
+										<a href="#"><img src="<?php echo $baseurl;?>media/wysiwyg/30.jpg" alt="<?php echo $_category->getName();?>" style="width:100%"></a>
+									</div>
+								<?php }else if($_category->getId()=='111'){?>
+									<div class="mega1-col mega1-col2">
+										<a href="#"><img src="<?php echo $baseurl;?>media/wysiwyg/50.jpg" alt="<?php echo $_category->getName();?>" style="width:100%"></a>
+									</div>
+								<?php }?>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+         </li>
+      <?php 
+      else:      
+      if($_category->getId()==137){
+	  }elseif($_category->getId()==43){
+	  }elseif($_category->getId()==44){
+	  }elseif($_category->getId()==138){
+	  }else{?>
+		 <li class="megamenu2-parent  other-toggle sm_megamenu_lv1 sm_megamenu_nodrop">
+			 <a class="sm_megamenu_head sm_megamenu_nodrop " href="<?php echo $baseurl;?>shop/<?php echo $vendorname;?>/catid/<?php echo $_category->getId();?>/" id="sm_megamenu_<?php echo $_category->getId();?>">
+				<span class="sm_megamenu_icon sm_megamenu_nodesc">
+					<span class="sm_megamenu_title"><?php echo $_category->getName();?></span>
+				</span>
+			 </a>
+		</li>
+    <?php 
+	}
+    endif;
+}
+?>
+</ul>
+<?php 
+}
+?>
+		</div>
+	</div>

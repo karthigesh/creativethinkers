@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <stallioni_shop>
+			<active>true</active>
+			<codePool>local</codePool>
+			<version>1.0.0</version>
+        </stallioni_shop>        
+    </modules>
+	<global>
+		<block>
+			<stallioni_shop>
+				<class>Stallioni_Shop_Block</class>
+			</stallioni_shop>
+		</block>
+		<models>
+            <stallioni_shop>
+                <class>Stallioni_Shop_Model</class>
+                <resourceModel>Shop_resource</resourceModel>
+            </stallioni_shop>
+            <shop_mysql4>
+                <class>Stallioni_Shop_Model_Mysql4</class>
+            </shop_mysql4>
+             <shop_resource>
+				<class>Stallioni_Shop_Model_Resource</class>
+			</shop_resource>
+          </models>
+		<helpers>
+			<shop>
+				<class>Stallioni_Shop_Helper</class>
+			</shop>
+		</helpers>
+	</global>
+</config>
+

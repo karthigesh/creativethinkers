@@ -1,0 +1,165 @@
+<?php
+$conn = Mage::getSingleton('core/resource')->getConnection('core_read');
+$query = 'SELECT * FROM prodselect';
+$selectquery = $conn->fetchAll($query);
+$baseurl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+$currentUrl = Mage::helper('core/url')->getCurrentUrl();
+$current_url = explode('?', $currentUrl);
+$previous_url = $current_url[0];
+$_productCollection = Mage::getModel('catalog/product')
+							->getCollection()
+							->addAttributeToSort('created_at', 'DESC')
+							->addAttributeToSelect('*')
+							->load();
+if($_GET){
+	$cust_id = $_GET['customer_id'];
+	$resource = Mage::getSingleton('core/resource')->getConnection('core_read');
+	$query = 'SELECT * FROM prodselect WHERE vendorid = '. (int)$cust_id;
+	$selectquery1 = $resource->fetchRow($query);
+	$newselect = unserialize($selectquery1['selectproducts']);
+	$query1 = 'SELECT vendorname FROM vendorpage WHERE vendor_id = '. (int)$cust_id;
+	$selectquery2 = $conn->fetchRow($query1);
+	$vendorname2 = $selectquery2['vendorname'];
+?>
+<div class="content-header">
+<table cellspacing="0">
+    <tbody>
+		<tr>
+        <td style="width:90%;"><h3 class="icon-head head-products"><?php echo $this->__('Edit Distributor');?></h3></td>
+        <td style="text-align:right;"><a href="<?php echo $previous_url;?>"><?php echo $this->__('Back');?></a></td>
+		</tr>
+	</tbody>	
+</table>
+</div>
+<div class="vendor-prodselect">
+	<div class="page-title">
+        <h1><?php echo $this->__('Vendor Product Selection');?></h1>
+    </div>
+	<div class="vendor-panel">
+		<div id="success1"></div>
+		<form method="POST" id="productsave" name="productsave">
+			<div class="ven">
+					<p class="vendhead"><?php echo $this->__('Select the products to be listed for');?><strong><?php echo ' '.$vendorname2;?></strong></p>
+			</div>
+			
+			<div class="vendor">
+				<div class="ven-a">
+					<label for="prodselect">
+						<h2><?php echo $this->__('Products list:');?></h2>
+					</label>
+				</div>
+				<div class="ven-b">
+					<select name="prod_select[]" id="prod_select" multiple>	
+						<?php 
+						foreach ($_productCollection as $_product){
+							$customer_group = $_product->getAttributeText('custom_groups');
+							if($customer_group !="distributor"){
+								if((in_array($_product->getId(), $newselect))){
+									
+									echo '<option value="'.$_product->getId().'" selected>'.$_product->getName().'</option>';
+								}else{
+									echo '<option value="'.$_product->getId().'">'.$_product->getName().'</option>';
+								}
+							}
+						}
+						?>
+					</select>
+					<div class="hint"><?php echo $this->__('<b>Hint:</b> You can select multiple products by pressing ctrl key.');?></div>
+				</div>				
+			</div>
+			<div class="ven">
+					<input type="hidden" name="cust_id" id="cust_id" value="<?php echo $cust_id;?>">
+					<button type="submit" id="prodselectbyvendor" name="prodselectbyvendor"><?php echo $this->__('Submit');?></button>
+			</div>	
+		</form>
+	</div>
+</div>
+<?php
+}else{
+?>
+<div class="content-header">
+<table cellspacing="0">
+    <tbody><tr>
+        <td style="width:100%;"><h3 class="icon-head head-products"><?php echo $this->__('Distributor Selected Products:');?></h3></td>
+    </tr>
+</tbody></table>
+</div>
+<div class="grid">
+	<div class="hor-scroll">
+		<table cellspacing="0">
+			<thead>
+				<tr class="headings">
+					<th><span class="nobr"><?php echo $this->__('ID');?></span></th>
+					<th><span class="nobr"><?php echo $this->__('Distributor ID');?></span></th>
+					<th><span class="nobr"><?php echo $this->__('Distributor Name');?></span></th>
+					<th><span class="nobr"><?php echo $this->__('Products Selected');?></span></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				$i=0;
+				echo '<pre>';
+				foreach($selectquery as $prodselectlist){
+					$id = $prodselectlist['prodselectid'];
+					$distid = $prodselectlist['vendorid'];
+					$query1 = 'SELECT vendorname FROM vendorpage WHERE vendor_id = '. (int)$distid;
+					$selectquery1 = $conn->fetchRow($query1);
+					$vendorname = $selectquery1['vendorname'];
+					$productlist = unserialize($prodselectlist['selectproducts']);
+					$productlist = implode(', ', $productlist);
+					?>
+					<tr class="<?php if($i%2==0){echo 'even';}?> pointer">
+						<td><?php echo $id;?></td>
+						<td><?php echo $distid;?></td>
+						<td><?php echo $vendorname;?></td>
+						<td><?php echo $productlist;?></td>
+						<td>
+						<form id="distset">
+							<input type="hidden" name="customer_id" value="<?php echo $distid;?>"/>
+							<button id="custedit"><?php echo $this->__('Edit');?></button>
+						</form>
+						</td>
+					</tr>
+				<?php
+				$i++;
+				}
+				?>
+			</tbody>
+		</table>
+	</div>
+</div>
+<?php
+}
+?>
+<script>
+	jQuery('#prodselectbyvendor').click(function(){				
+		var baseurl = '<?php echo $baseurl;?>';
+		var formData = new FormData(jQuery('#productsave')[0]);
+		if( !jQuery('#prod_select').val() ){
+			alert('please select some products!');
+			return false;
+		}else{
+			jQuery.ajax({
+							url: baseurl+'prodselect/index/prodsaves/',
+							type: 'POST',
+							data: formData,
+							async: false, 
+							success: function (data) {
+								if(data='committed'){
+									html = '<div class="msgsuccess">Success. Vendor details have been successfully saved</div>';
+									jQuery('#success1').append(html);
+									setTimeout(function() {
+									jQuery('.msgsuccess').remove();
+									}, 3500);
+								}
+							},
+							cache: false,
+							contentType: false,
+							processData: false
+							
+		});
+		}
+		return false;
+	});
+</script>

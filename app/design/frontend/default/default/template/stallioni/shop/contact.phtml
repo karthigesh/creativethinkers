@@ -1,0 +1,313 @@
+<?php
+$var_value = Mage::registry('vendordetails');
+$vendor_id = $var_value['vendor_id'];
+$vendorname = $var_value['vendorname'];
+$vendortitle = str_replace('-', ' ', $vendorname);
+$vendorlogo = $var_value['vendorlogo'];
+$vendorphone = $var_value['vendorphone'];
+$description = $var_value['description'];
+$address = $var_value['address'];
+$vendor_url = $var_value['vendorurl'];
+$customer = Mage::getModel('customer/customer')->load($vendor_id)->getData();
+$customer_address_id = $customer['default_billing'];
+$defaultBillingAddress = Mage::getModel('customer/address')->load($customer_address_id);
+$customer_email = $customer['email'];
+$company = $defaultBillingAddress['company'];
+$conn = Mage::getSingleton('core/resource')->getConnection('core_read');
+$query = 'SELECT * FROM vendorpage_about WHERE vendorid = '. (int)$vendor_id;
+$selectquery1 = $conn->fetchRow($query);
+$data = $selectquery1['about'];
+$baseurl = Mage::getBaseUrl();
+?>
+<title><?php echo 'Contact '.ucfirst($vendortitle)?></title>
+<?php
+Mage::register('vendorname', $vendorname);
+$block = $this->getLayout()->createBlock('core/template');
+		$block->setTemplate('stallioni/shop/header.phtml');
+		echo $block->toHtml(); 
+
+?>
+<body id="bd" class="sm_market vendorshop <?php echo $vendorname;?> shop-about">
+<div id="yt_wrapper">
+	<div id="yt_header" class="yt-header wrap header1-wrap">		     
+		<div class="yt-header-middle">
+			<div class="container">
+				<div class="row">
+					<div class="logo col-lg-2 col-md-2 col-sm-12 col-xs-12">
+						<div class="logo1">
+							<a href="<?php echo $baseurl.'shop'.DS.$vendorname.DS;?>" title="<?php echo $vendortitle;?>" class="logo"><img src="<?php echo $vendorlogo;?>" alt="thecapcompany"></a>
+						</div>
+					</div>
+					<div class="header-middle-right col-lg-10 col-md-10 col-sm-12 col-xs-12">
+						<div class="topmenuset">
+							<div class="sm_megamenu_wrapper_horizontal_menu sambar">
+								<div class="sambar-inner">
+										<a class="btn-sambar" data-sapi="collapse" id="custommobileset">
+											<span class="icon-bar"></span>
+											<span class="icon-bar"></span>
+											<span class="icon-bar"></span>
+										</a>
+										<ul class="sm-megamenu-hover sm_megamenu_menu sm_megamenu_menu_black" id="custom_menusambar" data-jsapi="on">
+											<li class=" other-toggle sm_megamenu_lv1 sm_megamenu_drop parent   ">
+												<a class="sm_megamenu_head sm_megamenu_drop " href="<?php echo $baseurl.'shop'.DS.$vendorname.DS;?>" id="sm_megamenu_165">
+													<span class="sm_megamenu_title">Home</span>
+												</a>
+											</li>
+											<li class=" other-toggle sm_megamenu_lv1 sm_megamenu_drop parent   ">
+												<a class="sm_megamenu_head sm_megamenu_drop " href="<?php echo $baseurl.'shop'.DS.$vendorname.DS.'about'.DS?>" id="sm_megamenu_162">
+													<span class="sm_megamenu_title">About Us</span>
+												</a>
+											</li>
+											<li class=" other-toggle sm_megamenu_lv1 sm_megamenu_drop parent   ">
+												<a class="sm_megamenu_head sm_megamenu_drop " href="<?php echo $baseurl.'shop'.DS.$vendorname.DS.'howtoorder'.DS?>" id="sm_megamenu_167">
+													<span class="sm_megamenu_title">How To Order</span>								                                
+												</a>
+											</li>
+											<li class=" other-toggle sm_megamenu_lv1 sm_megamenu_drop parent   ">
+												<a class="sm_megamenu_head sm_megamenu_drop " href="<?php echo $baseurl.'shop'.DS.$vendorname.DS.'contact'.DS?>" id="sm_megamenu_169">
+													<span class="sm_megamenu_title">Contact</span>
+												</a>
+											</li>
+										</ul>
+								</div><!--sambar-inner-->
+							</div><!--sm mega menu wrapper-->
+						</div><!--topmenuset-->
+						<div class="head-searchbox">
+							<div class="top-right-search">
+								<div class="topphone" style="float: right;">
+									<div><span><?php echo '<strong>Contact:&nbsp</strong>'.$vendorphone;?></span><span><?php echo '&nbsp<strong>Email:&nbsp</strong>'.$customer_email;?></span></div>
+								</div>
+								<form id="search_mini_form" action="<?php echo $baseurl;?>catalogsearch/result/" method="get">
+								<div class="form-search simple-search">
+								<span class="search-icon">
+								</span>
+								<input id="search" type="text" name="q" value="" class="input-text" autocomplete="off">
+								<div id="search_autocomplete" class="search-autocomplete" style="display: none;"></div>
+								<button type="submit" title="Search" class="button">Search
+								<script type="text/javascript">
+								//<![CDATA[
+								var searchForm = new Varien.searchForm('search_mini_form', 'search', 'Search...');
+								searchForm.initAutocomplete('<?php echo $baseurl;?>catalogsearch/ajax/suggest/', 'search_autocomplete');
+								//]]>
+								</script>
+								</button></div>
+								</form>
+							</div>
+						</div>
+					</div><!-- header middle right-->
+				</div><!--row-->
+			</div><!--container-->
+		</div><!-- header middle-->
+		<div class="yt-header-bottom">
+			<div class="container">
+				<div class="row">
+					<div id="yt_header_left" class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+						<div id="yt_menu_short">
+							<div id="btn_categories">
+								<span><i class="icon-cate"></i>Cap Categories</span>
+							</div>
+							<div class="yt-menu-content">
+									<?php $block1 = $this->getLayout()->createBlock('core/template');
+										$block1->setTemplate('stallioni/shop/topmenu.phtml');
+										echo $block1->toHtml(); 
+									 ?>
+							</div>
+						</div><!--yt menu short-->
+					</div><!--yt header left-->
+				</div><!--row-->
+			</div><!--container-->
+		</div><!--yt header bottom-->
+	</div><!--yt_header-->
+	<div id="yt_content" class="yt-content wrap">
+		<div id="yt_main" class="yt-main col-main">
+			<div class="yt-main-inner yt-content-inner">
+				<div class="container">
+					<div class="row">
+						<div id="yt_pathway" class="clearfix">
+							<div class="pathway-inner">
+								<ul class="breadcrumbs">
+									<div class="breadcrumbs-content">
+										<li class="home" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+										<a itemprop="url" href="<?php echo $baseurl.'shop'.DS.$vendorname.DS;?>" title="Go to Home Page" class="has-link">
+										<span itemprop="title">Home</span>
+										</a>
+										</li>
+										<li class="cms_page last" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><?php echo $vendorname;?></li>
+									</div>
+								</ul>
+							</div>
+						</div><!--yt_pathway-->
+						<div class="columns-w">
+							<div id="yt_main" class="yt-main-left yt-main col-main col-lg-9 col-md-9 col-sm-8 col-xs-12">
+								<div class="col-md-12 page-title title-c">
+									<h1><?php echo 'Contact '.$vendortitle;?></h1>
+								</div>
+								<form method="POST" id="customer_contact_form">
+									<div id="success"></div>
+									<div class="ccf col-xs-12">
+										<h2><?php echo 'Personal Information';?></h2>
+										<div class="sets">
+											<div class="set1"><label for="name"><span class="required">*</span><?php echo 'Name:';?></label></div>
+											<div class="set2">
+												<div class="fnset">
+													<span class="nameicon"></span>
+													<input type="text" name="fname" id="fname" value="" required>
+												</div>
+												<div class="lnset">
+													<span class="nameicon"></span>
+													<input type="text" name="lname" id="lname" value="" required>
+												</div>
+											</div>
+										</div><!--sets-->
+										<div class="sets">
+											<div class="set1"><label for="name"><span class="required">*</span><?php echo 'Email address';?></label></div>
+											<div class="set2">
+												<div class="emset">
+													<span class="emailicon"></span>
+													<input type="email" name="email" id="email" value="" required>
+												</div>
+											</div>
+										</div><!--sets-->
+										<div class="sets">
+											<div class="set1"><label for="name"><span class="required">*</span><?php echo 'Company Name';?></label></div>
+											<div class="set2">
+												<div class="cnset">
+													<span class="companyicon"></span>
+													<input type="text" name="companyname" id="companyname" value="" required>
+												</div>
+											</div>
+										</div><!--sets-->
+										<h2><?php echo 'Contact Information';?></h2>
+										<div class="sets">
+											<div class="set1"><label for="name"><span class="required">*</span><?php echo 'Phone Number';?></label></div>
+											<div class="set2">
+												<div class="pnset">
+													<span class="phicon"></span>
+													<input type="text" name="phone" id="phone" value="" required>
+												</div>
+												<div class="fxset">
+													<span class="fxicon"></span>
+													<input type="text" name="fax" id="fax" value="" required>
+												</div>
+											</div>
+										</div><!--sets-->
+										<div class="sets">
+											<div class="set1"><label for="name"><?php echo 'Address';?></label></div>
+											<div class="set2">
+												<div class="adset">
+													<span class="addresIcon">  </span>
+													<input type="text" name="street" id="street" value="">
+												</div>
+												<div class="ctset">
+													<span class="cityIcon"></span>
+													<input type="text" name="city" id="city" value="">
+												</div>
+												<div class="stset">
+													<span class="cityIcon"></span>
+													<input type="text" name="state" id="state" value="">
+												</div>
+												<div class="zipset">
+													<span class="zipIcon"></span>
+													<input type="text" name="zipcode" id="zipcode" value="">
+												</div>
+												<div class="cyset">
+												<?php $_countries = Mage::getResourceModel('directory/country_collection')->loadData()->toOptionArray(false) ?>  
+												<?php if (count($_countries) > 0): ?>  
+													<select name="country" id="country"  required>  
+														<option value="">– Please Select –</option>  
+														<?php foreach($_countries as $_country): ?>  
+														<option value="<?php echo $_country['value'] ?>" <?php if($_country['value']==$customer_country){echo 'selected';}?>><?php echo $_country['label'] ?></option>  
+														<?php endforeach; ?>  
+													</select>  
+												<?php endif; ?>
+												</div>
+											</div>
+										</div><!--sets-->
+										<h2><?php echo 'Other Information';?></h2>
+										<div class="sets">
+											<div class="set1"><label for="name"><?php echo 'Message';?></label></div>
+											<div class="set2">
+												<div class="messageset">
+													<textarea name="message" id="message" rows="5" cols="30"></textarea>
+												</div>
+											</div>
+										</div><!--sets-->
+										<div class="newset">
+										<div class="col-md-6">
+											<input type="hidden" name="vendorurl" id="vendorurl" value="<?php echo $vendor_url;?>"/>
+											<input type="hidden" name="adminemail" id="admineamil" value="<?php echo $customer_email;?>"/>
+											<input type="submit" value="Submit" class="button"></div>
+										<div class="col-md-6"><input type="reset" value="reset"></div>
+										</div>
+									</div>
+								</form>
+							</div><!--yt_main-->
+						</div><!--columns-w-->
+					</div><!--row-->
+				</div><!--container-->
+			</div><!--yt-main-inner-->
+		</div><!--yt_main-->
+	</div><!--yt_content-->
+<?php
+$block->setTemplate('stallioni/shop/footer.phtml');
+echo $block->toHtml(); 
+?>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+	jQuery('.button').click(function(){
+		var fname = jQuery('#fname').val();
+		var lname = jQuery('#lname').val();
+		var companyname = jQuery('#companyname').val();
+		var email = jQuery('#email').val();
+		var phone = jQuery('#phone').val();
+		var street = jQuery('#street').val();
+		var state = jQuery('#state').val();
+		var city = jQuery('#city').val();
+		var country = jQuery('#country').val();
+		var zipcode = jQuery('#zipcode').val();		
+		var baseurl = '<?php echo $baseurl;?>';
+		var formData = new FormData(jQuery('#customer_contact_form')[0]);
+		if(fname == ""){
+			alert('Please enter the firstname');
+			return false;
+		}else if(lname == ""){
+			alert('Please enter the lastname');
+			return false;
+		}else if(companyname == ""){
+			alert('Please enter the companyname');
+			return false;
+		}else if(email == ""){
+			alert('Please enter the email');
+			return false;
+		}else if(phone == ""){
+			alert('Please enter the phone');
+			return false;
+		}else{	
+		jQuery.ajax({
+							url: baseurl+'contactsave/index/index/',
+							type: 'POST',
+							data: formData,
+							async: true,            
+							success: function (data) {
+								alert(data);return false;
+								if(data=='success'){
+									html = '<div class="msgsuccess">Thank you for contacting us. We will get back to you soon.</div>';
+									jQuery('#success').append(html);
+									setTimeout(function() {
+									jQuery('.msgsuccess').remove();
+									}, 3500);
+									jQuery('#customer_contact_form')[0].reset();
+								}
+									
+							},
+							cache: false,
+							contentType: false,
+							processData: false
+			});
+		return false;
+	}
+	});
+});
+</script>
+</div><!--yt_wrapper-->
+</body>

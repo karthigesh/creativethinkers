@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <stallioni_vendorpage>
+			<active>true</active>
+			<codePool>local</codePool>
+			<version>1.0.0</version>
+        </stallioni_vendorpage>        
+    </modules>
+	<global>
+		<block>
+			<stallioni_vendorpage>
+				<class>Stallioni_Vendorpage_Block</class>
+			</stallioni_vendorpage>
+		</block>
+		<models>
+            <stallioni_vendorpage>
+                <class>Stallioni_Vendorpage_Model</class>
+                <resourceModel>vendorpage_resource</resourceModel>
+            </stallioni_vendorpage>
+            <vendorpage_mysql4>
+                <class>Stallioni_Vendorpage_Model_Mysql4</class>
+            </vendorpage_mysql4>
+             <vendorpage_resource>
+				<class>Stallioni_Vendorpage_Model_Resource</class>
+			</vendorpage_resource>
+          </models>
+		<helpers>
+			<vendorpage>
+				<class>Stallioni_Vendorpage_Helper</class>
+			</vendorpage>
+		</helpers>
+	</global>
+</config>
+
